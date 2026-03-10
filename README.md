@@ -1,4 +1,4 @@
-# ANNvedi
+# ANNvedi - Approximate Nearest Neighbor Search for RAG (C++ / Python)
 
 Currently (BASELINE): linear (brute-force) k-nearest neighbor index = for each query we compute L2 distance to all dataset vectors and select k smallest
 
