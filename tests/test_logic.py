@@ -1,25 +1,34 @@
+import numpy as np
 from python.wrapper import LinearANN
 
-import numpy as np
-import h5py
-import os
+def test_fit_query():
+    data = np.random.rand(50, 16).astype(np.float32)
 
-output_dir = "/content/datasets"
-hdf5_files = [f for f in os.listdir(output_dir) if f.endswith('.hdf5')]
-if hdf5_files:
-    first = os.path.join(output_dir, hdf5_files[0])
-    print(f"Elaborazione: {first}")
-    with h5py.File(first, 'r') as f:
-        train = f['/train'][:]
-        queries = f['/test'][:5]   # prime 5 query per test rapido
+    index = LinearANN()
+    index.fit(data)
 
-    ann = LinearANN()
-    ann.fit(train)
+    res = index.query(data[0], 5)
 
-    for i, q in enumerate(queries):
-        ids = ann.query(q, 100)
-        print(f"Query {i}: primi 5 ID = {ids[:5]}")
+    assert len(res) == 5
 
-    print("Distanze totali calcolate:", ann.total_distances_count())
-else:
-    print("Nessun dataset trovato in /content/datasets. Prima esegui lo scaricamento con gdown.")
+
+def test_self_neighbor():
+    data = np.random.rand(50, 16).astype(np.float32)
+
+    index = LinearANN()
+    index.fit(data)
+
+    res = index.query(data[10], 1)
+
+    assert res[0] == 10
+
+
+def test_distance_counter():
+    data = np.random.rand(20, 8).astype(np.float32)
+
+    index = LinearANN()
+    index.fit(data)
+
+    index.query(data[0], 3)
+
+    assert index.total_distances_count() == 20

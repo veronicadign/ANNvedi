@@ -4,7 +4,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 ext_modules = [
     Pybind11Extension(
         "linear_ann_cpp",
-        ["linear_index.cpp"],
+        ["src/linear_index.cpp"],
         cxx_std=14,
     ),
 ]
