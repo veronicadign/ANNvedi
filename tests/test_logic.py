@@ -1,5 +1,5 @@
 import numpy as np
-from python.wrapper import LinearANN
+from linear_ann.wrapper import LinearANN
 
 def test_fit_query():
     data = np.random.rand(50, 16).astype(np.float32)

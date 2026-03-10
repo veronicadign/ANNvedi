@@ -1,4 +1,4 @@
-from python.wrapper import LinearANN
+from linear_ann.wrapper import LinearANN
 import numpy as np
 
 print("Starting test...")
