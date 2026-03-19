@@ -14,6 +14,6 @@ RUN pip install .
 WORKDIR /app
 RUN cp /app/source/algorithm.py /app/algorithm.py && \
     cp /app/source/scenarios.yaml /app/scenarios.yaml && \
-    cp -r /app/source/python /app/python
+    cp -r /app/source/linear_ann /app/linear_ann
 
 # No ENTRYPOINT override – the base image harness handles everything.

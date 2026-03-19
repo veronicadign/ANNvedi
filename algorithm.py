@@ -1,6 +1,6 @@
 
 import numpy as np
-from python.wrapper import LinearANN
+from linear_ann.wrapper import LinearANN
 
 class Algorithm:
 
