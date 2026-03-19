@@ -1,0 +1,13 @@
+scenarios:
+  high_recall:
+    default:
+      index_params: {}
+      query_params: {}
+  fast:
+    default:
+      index_params: {}
+      query_params: {}
+  memory:
+    default:
+      index_params: {}
+      query_params: {}

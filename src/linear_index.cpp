@@ -6,11 +6,13 @@
 #include <algorithm>
 #include <cmath>
 
+using namespace std;
+
 namespace py = pybind11;
 
 class LinearIndex {
 private:
-    std::vector<float> data_;
+    vector<vector<float>> data_;    
     size_t npts_ = 0;
     size_t dim_ = 0;
     size_t total_distances_ = 0;
@@ -25,12 +27,15 @@ public:
         npts_ = buf.shape[0];
         dim_ = buf.shape[1];
         float* ptr = static_cast<float*>(buf.ptr);
-        data_.assign(ptr, ptr + npts_ * dim_);
+        data_.resize(npts_);
+        for (size_t i = 0; i < npts_; ++i) {
+            data_[i].assign(ptr + i * dim_, ptr + (i + 1) * dim_);
+        }
     }
 
     py::array_t<int64_t> query(py::array_t<float> q, int k) {
         if (dim_ == 0 || npts_ == 0)
-            throw std::runtime_error("Indice non addestrato");
+            throw runtime_error("Indice non addestrato");
 
         py::buffer_info qbuf = q.request();
         if (qbuf.ndim != 1 || qbuf.shape[0] != dim_)
@@ -38,30 +43,29 @@ public:
 
         float* q_ptr = static_cast<float*>(qbuf.ptr);
 
-        std::vector<std::pair<float, int>> dist_id(npts_);
-        for (size_t i = 0; i < npts_; ++i) {
+        vector<pair<float, int>> dist_id(npts_);
+        for (int i = 0; i < npts_; ++i) {
             float sum = 0.0f;
-            for (size_t d = 0; d < dim_; ++d) {
-                float diff = data_[i * dim_ + d] - q_ptr[d];
-                sum += diff * diff;
+            for (int d = 0; d < dim_; ++d) {
+                float diff = data_[i][d] - q_ptr[d];
+                sum += diff * diff; 
             }
-            dist_id[i] = {sum, static_cast<int>(i)};
+            dist_id[i] = {sum, i};
         }
 
         total_distances_ += npts_;
 
-        if (k > static_cast<int>(npts_)) k = npts_;
-        std::nth_element(dist_id.begin(), dist_id.begin() + (k - 1), dist_id.end(),
-                         [](const auto& a, const auto& b) { return a.first < b.first; });
+        if (k > npts_) k = npts_;
+        nth_element(dist_id.begin(), dist_id.begin() + (k - 1), dist_id.end());
 
-        std::vector<int64_t> result(k);
+        vector<int64_t> result(k);
         for (int i = 0; i < k; ++i)
             result[i] = dist_id[i].second;
 
         return py::array_t<int64_t>({k}, result.data());
     }
 
-    size_t total_distances_count() const { return total_distances_; }
+    int total_distances_count() const { return total_distances_; }
 };
 
 PYBIND11_MODULE(linear_ann_cpp, m) {
