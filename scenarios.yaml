@@ -11,3 +11,11 @@ scenarios:
     default:
       index_params: {}
       query_params: {}
+  lsh_default:
+    default:
+      index_params: {backend: lsh, n_tables: 10, n_bits: 8}
+      query_params: {}
+  lsh_high_recall:
+    default:
+      index_params: {backend: lsh, n_tables: 20, n_bits: 12}
+      query_params: {}

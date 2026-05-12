@@ -1,6 +1,7 @@
 
 import numpy as np
 from linear_ann.wrapper import LinearANN
+from lsh_ann.wrapper import LSHANN
 
 class Algorithm:
 
@@ -8,7 +9,11 @@ class Algorithm:
         self._n_distances = 0   # cumulative distance counter – update in query()
 
     def fit(self, train: np.ndarray, **index_params) -> None:
-        self._index = LinearANN()
+        backend = index_params.pop('backend', 'linear')
+        if backend == 'lsh':
+            self._index = LSHANN(**index_params)
+        else:
+            self._index = LinearANN()
         self._index.fit(train)
 
     def query(self, query: np.ndarray, k: int, **query_params) -> np.ndarray:

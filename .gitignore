@@ -8,6 +8,7 @@ dist/
 # Python cache
 __pycache__/
 .ipynb_checkpoints/
+.claude
 
 # Data
 datasets/
