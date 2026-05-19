@@ -56,16 +56,18 @@ public:
         total_distances_ += npts_;
 
         if (k > npts_) k = npts_;
-        nth_element(dist_id.begin(), dist_id.begin() + (k - 1), dist_id.end());
+        partial_sort(dist_id.begin(), dist_id.begin() + k, dist_id.end());
 
-        vector<int64_t> result(k);
+        py::array_t<int64_t> result_arr(k);
+        py::buffer_info res_buf = result_arr.request();
+        int64_t* res_ptr = static_cast<int64_t*>(res_buf.ptr);
         for (int i = 0; i < k; ++i)
-            result[i] = dist_id[i].second;
+            res_ptr[i] = dist_id[i].second;
 
-        return py::array_t<int64_t>({k}, result.data());
+        return result_arr;
     }
 
-    int total_distances_count() const { return total_distances_; }
+    int64_t total_distances_count() const { return total_distances_; }
 };
 
 PYBIND11_MODULE(linear_ann_cpp, m) {

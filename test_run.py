@@ -1,11 +1,11 @@
-from linear_ann.wrapper import LinearANN
+from lsh_ann.wrapper import LSHANN
 import numpy as np
 
 print("Starting test...")
 
 data = np.random.rand(100, 32).astype(np.float32)
 
-index = LinearANN()
+index = LSHANN()
 index.fit(data)
 
 q = data[0]
