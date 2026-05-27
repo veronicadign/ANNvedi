@@ -1,0 +1,13 @@
+scenarios:
+  high_recall:
+    default:
+      index_params: {M: 16, ef_construction: 100}
+      query_params: {ef: 250}
+  fast:
+    default:
+      index_params: {M: 8, ef_construction: 100}
+      query_params: {ef: 120}
+  memory:
+    default:
+      index_params: {M: 8, ef_construction: 100}
+      query_params: {ef: 400}

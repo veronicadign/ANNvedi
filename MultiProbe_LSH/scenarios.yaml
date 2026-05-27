@@ -1,0 +1,13 @@
+scenarios:
+  high_recall:
+    default:
+      index_params: {n_tables: 10, n_bits: 10}
+      query_params: {probe_depth: 2}
+  fast:
+    default:
+      index_params: {n_tables: 8, n_bits: 8}
+      query_params: {probe_depth: 1}
+  memory:
+    default:
+      index_params: {n_tables: 12, n_bits: 10}
+      query_params: {probe_depth: 2}
