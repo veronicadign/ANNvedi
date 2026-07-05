@@ -115,11 +115,10 @@ inline float compute_l2_distance(const float* a, const float* b, size_t dim, flo
 }
 
 // Compute L2 distance between 8-bit quantized candidate vector and float query vector on the fly.
-inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, size_t dim, float scale, float offset, float threshold = std::numeric_limits<float>::max()) {
+inline float compute_l2_distance_quantized(const uint8_t* a, const float* q_shifted, size_t dim, float scale, float threshold = std::numeric_limits<float>::max()) {
 #if defined(HAS_AVX512)
     __m512 sum_vec = _mm512_setzero_ps();
     __m512 v_scale = _mm512_set1_ps(scale);
-    __m512 v_offset = _mm512_set1_ps(offset);
     size_t i = 0;
     
     // Process 16 bytes at a time
@@ -127,12 +126,11 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
         __m128i v_bytes = _mm_loadu_si128((const __m128i*)(a + i));
         __m512i v_ints = _mm512_cvtepu8_epi32(v_bytes);
         __m512 v_floats = _mm512_cvtepi32_ps(v_ints);
-        // Dequantize: v_floats * v_scale + v_offset
-        v_floats = _mm512_fmadd_ps(v_floats, v_scale, v_offset);
         
-        __m512 v_b = _mm512_loadu_ps(b + i);
-        __m512 diff = _mm512_sub_ps(v_floats, v_b);
-        sum_vec = _mm512_add_ps(sum_vec, _mm512_mul_ps(diff, diff));
+        __m512 v_q_shifted = _mm512_loadu_ps(q_shifted + i);
+        // diff = v_floats * v_scale - v_q_shifted
+        __m512 diff = _mm512_fmsub_ps(v_floats, v_scale, v_q_shifted);
+        sum_vec = _mm512_fmadd_ps(diff, diff, sum_vec);
         
         if (i % 96 == 80) {
             float sum = reduce_add_ps_512(sum_vec);
@@ -149,8 +147,7 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
     
     // Process remainder
     for (; i < dim; ++i) {
-        float dequant = a[i] * scale + offset;
-        float diff = dequant - b[i];
+        float diff = a[i] * scale - q_shifted[i];
         sum += diff * diff;
     }
     
@@ -158,7 +155,6 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
 #elif defined(HAS_AVX)
     __m256 sum_vec = _mm256_setzero_ps();
     __m256 v_scale = _mm256_set1_ps(scale);
-    __m256 v_offset = _mm256_set1_ps(offset);
     size_t i = 0;
     
     // Process 8 bytes at a time
@@ -168,11 +164,11 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
         __m128i v_bytes = _mm_cvtsi64_si128(val);
         __m256i v_ints = _mm256_cvtepu8_epi32(v_bytes);
         __m256 v_floats = _mm256_cvtepi32_ps(v_ints);
-        v_floats = _mm256_add_ps(_mm256_mul_ps(v_floats, v_scale), v_offset);
         
-        __m256 v_b = _mm256_loadu_ps(b + i);
-        __m256 diff = _mm256_sub_ps(v_floats, v_b);
-        sum_vec = _mm256_add_ps(sum_vec, _mm256_mul_ps(diff, diff));
+        __m256 v_q_shifted = _mm256_loadu_ps(q_shifted + i);
+        // diff = v_floats * v_scale - v_q_shifted
+        __m256 diff = _mm256_fmsub_ps(v_floats, v_scale, v_q_shifted);
+        sum_vec = _mm256_fmadd_ps(diff, diff, sum_vec);
         
         if (i % 96 == 88) {
             alignas(32) float temp[8];
@@ -193,8 +189,7 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
     
     // Process remainder
     for (; i < dim; ++i) {
-        float dequant = a[i] * scale + offset;
-        float diff = dequant - b[i];
+        float diff = a[i] * scale - q_shifted[i];
         sum += diff * diff;
     }
     
@@ -203,8 +198,7 @@ inline float compute_l2_distance_quantized(const uint8_t* a, const float* b, siz
     // Fallback standard dequantizing distance loop
     float sum = 0.0f;
     for (size_t i = 0; i < dim; ++i) {
-        float dequant = a[i] * scale + offset;
-        float diff = dequant - b[i];
+        float diff = a[i] * scale - q_shifted[i];
         sum += diff * diff;
         if (i % 16 == 15) {
             if (sum >= threshold) {

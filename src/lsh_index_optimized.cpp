@@ -75,11 +75,10 @@ static void kmeans_update_worker(int start, int end, int thread_id, void* arg) {
 struct LSHUserData {
     const int32_t* candidates;
     const uint8_t* quantized_data;
-    const float* q;
+    const float* q_shifted;
     int dim;
     int k;
     float scale;
-    float offset;
     std::pair<float, int32_t>* dists;
 };
 
@@ -88,7 +87,6 @@ static void lsh_worker(int start, int end, int thread_id, void* arg) {
     LSHUserData* ud = static_cast<LSHUserData*>(arg);
     int k = ud->k;
     float scale = ud->scale;
-    float offset = ud->offset;
     
     // Allocate a small stack-allocated array to avoid heap allocations inside thread workers
     std::pair<float, int32_t> local_top_k[64];
@@ -108,7 +106,7 @@ static void lsh_worker(int start, int end, int thread_id, void* arg) {
         // Threshold is the distance of the worst element in the local top-k
         float threshold = local_top_k[limit_k - 1].first;
         
-        float diff_sum = compute_l2_distance_quantized(pt, ud->q, ud->dim, scale, offset, threshold);
+        float diff_sum = compute_l2_distance_quantized(pt, ud->q_shifted, ud->dim, scale, threshold);
         ud->dists[i] = {diff_sum, idx};
         
         if (diff_sum < threshold) {
@@ -301,6 +299,11 @@ public:
         {
             py::gil_scoped_release release;
 
+            std::vector<float> q_shifted(dim_);
+            for (int d = 0; d < dim_; ++d) {
+                q_shifted[d] = q[d] - offset_;
+            }
+
             // 1. Centroid distance checks
             std::vector<std::pair<float, int>> centroid_dists;
             centroid_dists.resize(n_clusters_);
@@ -328,10 +331,13 @@ public:
                 }
             }
 
-            // Collect candidates only from active clusters
+            // Collect candidates only from active clusters with a candidate cap
             std::vector<int32_t> candidates;
             candidates.clear();
             candidates.reserve(npts_ / 8);
+
+            int target_refine = (refine_r > 0) ? refine_r : 4 * k;
+            size_t max_candidates = std::max(2000, 4 * target_refine);
 
             std::vector<float> dot_vals;
             dot_vals.resize(n_bits_);
@@ -346,10 +352,12 @@ public:
             double query_signatures = 0.0;
 
             for (int cluster_idx = 0; cluster_idx < active_clusters; ++cluster_idx) {
+                if (candidates.size() >= max_candidates) break;
                 int cluster_id = centroid_dists[cluster_idx].second;
                 
                 // Construct the base signature for this table and cluster
                 for (int t = 0; t < n_tables_; ++t) {
+                    if (candidates.size() >= max_candidates) break;
                     auto t_sig_start = std::chrono::high_resolution_clock::now();
                     
                     uint32_t base_signature = 0;
@@ -400,6 +408,7 @@ public:
                         int probe_count = std::min(n_probes, static_cast<int>(perturbations.size()));
                         
                         for (int p = 0; p < probe_count; ++p) {
+                            if (candidates.size() >= max_candidates) break;
                             uint32_t probed_signature = base_signature;
                             probed_signature ^= (1U << perturbations[p].bit1);
                             if (perturbations[p].bit2 != -1) {
@@ -434,7 +443,7 @@ public:
 
             // Pass 1: Compute coarse 8-bit quantized distances in parallel (enjoys 4x smaller memory bandwidth)
             dists.resize(n_cands);
-            LSHUserData ud = { candidates.data(), quantized_data_.data(), q, dim_, k, scale_, offset_, dists.data() };
+            LSHUserData ud = { candidates.data(), quantized_data_.data(), q_shifted.data(), dim_, k, scale_, dists.data() };
             if (pool_ && n_cands >= pool_->get_num_threads() * 2) {
                 pool_->run_parallel(lsh_worker, &ud, n_cands);
             } else {
@@ -442,7 +451,7 @@ public:
             }
 
             // Pass 2: Refine the top R candidates using original 32-bit floats
-            int target_refine = (refine_r > 0) ? refine_r : 4 * k;
+            target_refine = (refine_r > 0) ? refine_r : 4 * k;
             target_refine = std::max(k, target_refine);
             actual_refine_r = std::min(target_refine, n_cands);
 

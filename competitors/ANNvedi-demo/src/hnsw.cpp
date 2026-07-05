@@ -13,6 +13,8 @@
 #include <mutex>
 #include <atomic>
 #include <memory>
+#include <cstdint>
+
 #include "simd.h"
 
 namespace py = pybind11;
