@@ -9,6 +9,10 @@ sys.modules["pytest"] = mock_pytest
 
 # Add root and tests folders to sys.path
 sys.path.insert(0, "./tests")
+sys.path.insert(0, "./competitors/linear")
+sys.path.insert(0, "./competitors/lsh_simple")
+sys.path.insert(0, "./competitors/lsh_optimized")
+sys.path.insert(0, "./competitors/hnsw")
 sys.path.insert(0, ".")
 
 test_funcs_metadata = [
@@ -19,7 +23,7 @@ test_funcs_metadata = [
     ("test_lsh.test_lsh_self_neighbor", "test_lsh", "test_lsh_self_neighbor"),
     ("test_lsh.test_lsh_distance_counter", "test_lsh", "test_lsh_distance_counter"),
     ("test_lsh.test_algorithm_lsh_backend", "test_lsh", "test_algorithm_lsh_backend"),
-    ("test_lsh.test_algorithm_linear_unchanged", "test_lsh", "test_algorithm_linear_unchanged"),
+    ("test_lsh.test_lsh_simple_fit_query", "test_lsh", "test_lsh_simple_fit_query"),
     ("test_hnsw.test_hnsw_float", "test_hnsw", "test_hnsw_float"),
     ("test_hnsw.test_hnsw_sq8", "test_hnsw", "test_hnsw_sq8"),
     ("test_hnsw.test_hnsw_lsh", "test_hnsw", "test_hnsw_lsh"),
@@ -36,6 +40,10 @@ def run_single_test_process(name, module_name, func_name):
     mock_pytest = types.ModuleType("pytest")
     sys.modules["pytest"] = mock_pytest
     sys.path.insert(0, "./tests")
+    sys.path.insert(0, "./competitors/linear")
+    sys.path.insert(0, "./competitors/lsh_simple")
+    sys.path.insert(0, "./competitors/lsh_optimized")
+    sys.path.insert(0, "./competitors/hnsw")
     sys.path.insert(0, ".")
     
     try:

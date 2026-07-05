@@ -1,0 +1,13 @@
+scenarios:
+  lsh_default:
+    default:
+      index_params: {n_tables: 10, n_bits: 8}
+      query_params: {}
+  lsh_high_recall:
+    default:
+      index_params: {n_tables: 20, n_bits: 12}
+      query_params: {}
+  lsh_ultra_fast:
+    default:
+      index_params: {n_tables: 5, n_bits: 6}
+      query_params: {}

@@ -123,9 +123,9 @@ static void lsh_worker(int start, int end, int thread_id, void* arg) {
     }
 }
 
-class LSHIndex {
+class LSHIndexOptimized {
 public:
-    LSHIndex() = default;
+    LSHIndexOptimized() = default;
 
     void fit(py::array_t<float> data, int n_tables, int n_bits, int n_clusters = 256) {
         py::buffer_info buf = data.request();
@@ -442,7 +442,10 @@ public:
             }
 
             // Pass 2: Refine the top R candidates using original 32-bit floats
-            actual_refine_r = (refine_r > 0) ? std::min(refine_r, n_cands) : std::min(4 * k, n_cands);
+            int target_refine = (refine_r > 0) ? refine_r : 4 * k;
+            target_refine = std::max(k, target_refine);
+            actual_refine_r = std::min(target_refine, n_cands);
+
             std::partial_sort(dists.begin(), dists.begin() + actual_refine_r, dists.end(),
                               [](const std::pair<float, int32_t>& a, const std::pair<float, int32_t>& b) {
                                   return a.first < b.first;
@@ -460,7 +463,7 @@ public:
 
             // Sort the refined top k neighbors
             sort_k = std::min(k, actual_refine_r);
-            std::partial_sort(dists.begin(), dists.begin() + sort_k, dists.begin() + refine_r,
+            std::partial_sort(dists.begin(), dists.begin() + sort_k, dists.begin() + actual_refine_r,
                               [](const std::pair<float, int32_t>& a, const std::pair<float, int32_t>& b) {
                                   return a.first < b.first;
                               });
@@ -470,11 +473,15 @@ public:
         }
 
         // Copy top k and map them back to original indices
-        py::array_t<int64_t> result(sort_k);
+        py::array_t<int64_t> result(k);
         py::buffer_info res_buf = result.request();
         int64_t* res_ptr = static_cast<int64_t*>(res_buf.ptr);
-        for (int i = 0; i < sort_k; ++i) {
-            res_ptr[i] = reordered_to_original_[dists[i].second];
+        for (int i = 0; i < k; ++i) {
+            if (i < sort_k) {
+                res_ptr[i] = reordered_to_original_[dists[i].second];
+            } else {
+                res_ptr[i] = -1;
+            }
         }
 
         query_count_++;
@@ -620,13 +627,13 @@ private:
     int query_count_ = 0;
 };
 
-PYBIND11_MODULE(lsh_cpp_module, m) {
-    py::class_<LSHIndex>(m, "LSHIndex")
+PYBIND11_MODULE(lsh_cpp_optimized, m) {
+    py::class_<LSHIndexOptimized>(m, "LSHIndex")
         .def(py::init<>())
-        .def("fit", &LSHIndex::fit, py::arg("data"), py::arg("n_tables"), py::arg("n_bits"), py::arg("n_clusters") = 256)
-        .def("query", &LSHIndex::query, py::arg("query"), py::arg("k"), py::arg("n_probes") = 0, py::arg("n_probe_clusters") = 8, py::arg("refine_r") = -1)
-        .def("total_distances_count", &LSHIndex::total_distances_count)
-        .def("reset_distances_count", &LSHIndex::reset_distances_count)
-        .def("reset_profile_results", &LSHIndex::reset_profile_results)
-        .def("get_profile_results", &LSHIndex::get_profile_results);
+        .def("fit", &LSHIndexOptimized::fit, py::arg("data"), py::arg("n_tables"), py::arg("n_bits"), py::arg("n_clusters") = 256)
+        .def("query", &LSHIndexOptimized::query, py::arg("query"), py::arg("k"), py::arg("n_probes") = 0, py::arg("n_probe_clusters") = 8, py::arg("refine_r") = -1)
+        .def("total_distances_count", &LSHIndexOptimized::total_distances_count)
+        .def("reset_distances_count", &LSHIndexOptimized::reset_distances_count)
+        .def("reset_profile_results", &LSHIndexOptimized::reset_profile_results)
+        .def("get_profile_results", &LSHIndexOptimized::get_profile_results);
 }

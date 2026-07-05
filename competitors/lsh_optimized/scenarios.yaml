@@ -1,0 +1,13 @@
+scenarios:
+  memory:
+    default:
+      index_params: {n_tables: 25, n_bits: 10, n_clusters: 256}
+      query_params: {n_probes: 12, n_probe_clusters: 24, refine_r: 100}
+  fast:
+    default:
+      index_params: {n_tables: 15, n_bits: 8, n_clusters: 128}
+      query_params: {n_probes: 6, n_probe_clusters: 12, refine_r: 50}
+  high_recall:
+    default:
+      index_params: {n_tables: 30, n_bits: 12, n_clusters: 512}
+      query_params: {n_probes: 20, n_probe_clusters: 32, refine_r: 150}

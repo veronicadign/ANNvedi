@@ -1,5 +1,13 @@
 import numpy as np
-from HNSW.algorithm import Algorithm
+import sys
+import os
+
+# Add build directory to path for loading the binary module in local development
+build_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../build'))
+if os.path.exists(build_dir):
+    sys.path.insert(0, build_dir)
+
+from competitors.hnsw.algorithm import Algorithm
 
 def test_hnsw_float():
     data = np.random.rand(50, 16).astype(np.float32)
