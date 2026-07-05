@@ -1,0 +1,48 @@
+# NNS Competition – Scenario Definitions
+# =========================================
+# Structure:
+#
+#   scenarios:
+#     <scenario_name>:
+#       default:                    # fallback for any unlisted dataset
+#         index_params: {...}
+#         query_params: {...}
+#       <dataset_name>:             # dataset-specific override (optional)
+#         index_params: {...}
+#         query_params: {...}
+#
+# The harness resolves params as:
+#   1. Use the block matching the current dataset name, if present.
+#   2. Otherwise fall back to 'default'.
+#   3. If neither exists, the scenario fails with a clear error.
+#
+# Dataset names match the HDF5 filename stem
+# (e.g. "sift-128-euclidean" for sift-128-euclidean.hdf5).
+#
+# Scenario names must be valid Python identifiers.
+
+scenarios:
+
+  high_recall:
+    default:
+      index_params: {ef_construction: 100, M: 16}
+      query_params: {ef_search: 50}
+    landmark-nomic:
+      index_params: {ef_construction: 120, M: 20}
+      query_params: {ef_search: 60}
+  fast:
+    default:
+      index_params: {ef_construction: 100, M: 16}
+      query_params: {ef_search: 50}
+    landmark-nomic:
+      index_params: {ef_construction: 120, M: 20}
+      query_params: {ef_search: 60}
+  memory:
+    default:
+      index_params: {ef_construction: 100, M: 16}
+      query_params: {ef_search: 50}
+    landmark-nomic:
+      index_params: {ef_construction: 120, M: 20}
+      query_params: {ef_search: 60}
+
+

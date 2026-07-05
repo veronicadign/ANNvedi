@@ -1,21 +1,13 @@
 scenarios:
   high_recall:
     default:
-      index_params: {}
-      query_params: {}
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8}
+      query_params: {ef: 80}
   fast:
     default:
-      index_params: {}
-      query_params: {}
+      index_params: {backend: hnsw, M: 8, ef_construction: 64, mode: sq8}
+      query_params: {ef: 30}
   memory:
     default:
-      index_params: {}
-      query_params: {}
-  lsh_default:
-    default:
-      index_params: {backend: lsh, n_tables: 10, n_bits: 8}
-      query_params: {}
-  lsh_high_recall:
-    default:
-      index_params: {backend: lsh, n_tables: 20, n_bits: 12}
-      query_params: {}
+      index_params: {backend: lsh, n_tables: 25, n_bits: 10, n_clusters: 256}
+      query_params: {n_probes: 12, n_probe_clusters: 24, refine_r: 100}

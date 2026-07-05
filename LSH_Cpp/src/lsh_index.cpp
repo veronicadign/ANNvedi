@@ -64,7 +64,7 @@ public:
         }
     }
 
-    py::array_t<int64_t> query(py::array_t<float> query_vec, int k) {
+    py::array_t<int64_t> query(py::array_t<float> query_vec, int k, int n_probes = 0, int n_probe_clusters = 8, int refine_r = -1) {
         py::buffer_info qbuf = query_vec.request();
         if (qbuf.ndim != 1 || qbuf.shape[0] != dim_) {
             throw std::runtime_error("Query dimension mismatch");
@@ -165,7 +165,7 @@ PYBIND11_MODULE(lsh_cpp_module, m) {
     py::class_<LSHIndex>(m, "LSHIndex")
         .def(py::init<>())
         .def("fit", &LSHIndex::fit, py::arg("data"), py::arg("n_tables"), py::arg("n_bits"))
-        .def("query", &LSHIndex::query, py::arg("query"), py::arg("k"))
+        .def("query", &LSHIndex::query, py::arg("query"), py::arg("k"), py::arg("n_probes") = 0, py::arg("n_probe_clusters") = 8, py::arg("refine_r") = -1)
         .def("total_distances_count", &LSHIndex::total_distances_count)
         .def("reset_distances_count", &LSHIndex::reset_distances_count);
 }

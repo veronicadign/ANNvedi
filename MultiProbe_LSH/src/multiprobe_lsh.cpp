@@ -7,6 +7,7 @@
 #include <cmath>
 #include <numeric>
 #include <stdexcept>
+#include <atomic>
 
 namespace py = pybind11;
 
@@ -48,22 +49,25 @@ public:
         float* ptr = static_cast<float*>(buf.ptr);
         data_.assign(ptr, ptr + npts_ * dim_);
 
-        // Random projection matrix: (n_tables * n_bits) x dim
-        projections_.assign(n_tables_ * n_bits_, std::vector<float>(dim_));
-        std::mt19937 gen(42);
-        std::normal_distribution<float> dist(0.0f, 1.0f);
-        for (auto& row : projections_)
-            for (float& v : row)
-                v = dist(gen);
+        {
+            py::gil_scoped_release release;
+            // Random projection matrix: (n_tables * n_bits) x dim
+            projections_.assign(n_tables_ * n_bits_, std::vector<float>(dim_));
+            std::mt19937 gen(42);
+            std::normal_distribution<float> dist(0.0f, 1.0f);
+            for (auto& row : projections_)
+                for (float& v : row)
+                    v = dist(gen);
 
-        // Build hash tables
-        tables_.clear();
-        tables_.resize(n_tables_);
-        for (int i = 0; i < npts_; ++i) {
-            const float* pt = &data_[i * dim_];
-            for (int t = 0; t < n_tables_; ++t) {
-                uint32_t sig = compute_signature(pt, t);
-                tables_[t][sig].push_back(i);
+            // Build hash tables
+            tables_.clear();
+            tables_.resize(n_tables_);
+            for (int i = 0; i < npts_; ++i) {
+                const float* pt = &data_[i * dim_];
+                for (int t = 0; t < n_tables_; ++t) {
+                    uint32_t sig = compute_signature(pt, t);
+                    tables_[t][sig].push_back(i);
+                }
             }
         }
     }
@@ -78,58 +82,64 @@ public:
             throw std::runtime_error("Query dimension mismatch");
         const float* q = static_cast<const float*>(qbuf.ptr);
 
-        std::vector<bool> visited(npts_, false);
-        std::vector<int32_t> candidates;
-        candidates.reserve(npts_ / 8);
+        std::vector<std::pair<float, int32_t>> dists;
+        int sort_k = 0;
 
-        for (int t = 0; t < n_tables_; ++t) {
-            uint32_t sig = compute_signature(q, t);
+        {
+            py::gil_scoped_release release;
+            std::vector<bool> visited(npts_, false);
+            std::vector<int32_t> candidates;
+            candidates.reserve(npts_ / 8);
 
-            // Collect all signatures to probe for this table
-            std::vector<uint32_t> probes;
-            probes.reserve(1 + n_bits_ + n_bits_ * (n_bits_ - 1) / 2);
-            probes.push_back(sig);
-            if (probe_depth > 0)
-                hamming_neighbors(sig, n_bits_, probe_depth, probes);
+            for (int t = 0; t < n_tables_; ++t) {
+                uint32_t sig = compute_signature(q, t);
 
-            for (uint32_t ps : probes) {
-                auto it = tables_[t].find(ps);
-                if (it == tables_[t].end()) continue;
-                for (int32_t idx : it->second) {
-                    if (!visited[idx]) {
-                        visited[idx] = true;
-                        candidates.push_back(idx);
+                // Collect all signatures to probe for this table
+                std::vector<uint32_t> probes;
+                probes.reserve(1 + n_bits_ + n_bits_ * (n_bits_ - 1) / 2);
+                probes.push_back(sig);
+                if (probe_depth > 0)
+                    hamming_neighbors(sig, n_bits_, probe_depth, probes);
+
+                for (uint32_t ps : probes) {
+                    auto it = tables_[t].find(ps);
+                    if (it == tables_[t].end()) continue;
+                    for (int32_t idx : it->second) {
+                        if (!visited[idx]) {
+                            visited[idx] = true;
+                            candidates.push_back(idx);
+                        }
                     }
                 }
             }
-        }
 
-        // Fallback: if not enough candidates, use all points
-        if ((int)candidates.size() < k) {
-            candidates.resize(npts_);
-            std::iota(candidates.begin(), candidates.end(), 0);
-        }
-
-        int n_cands = candidates.size();
-        n_distances_ += n_cands;
-
-        // Compute distances to candidates
-        std::vector<std::pair<float, int32_t>> dists(n_cands);
-        for (int i = 0; i < n_cands; ++i) {
-            int32_t idx = candidates[i];
-            const float* pt = &data_[idx * dim_];
-            float s = 0.0f;
-            for (int d = 0; d < dim_; ++d) {
-                float diff = pt[d] - q[d];
-                s += diff * diff;
+            // Fallback: if not enough candidates, use all points
+            if ((int)candidates.size() < k) {
+                candidates.resize(npts_);
+                std::iota(candidates.begin(), candidates.end(), 0);
             }
-            dists[i] = {s, idx};
-        }
 
-        int sort_k = std::min(k, n_cands);
-        std::partial_sort(dists.begin(), dists.begin() + sort_k, dists.end(),
-            [](const std::pair<float,int32_t>& a,
-               const std::pair<float,int32_t>& b){ return a.first < b.first; });
+            int n_cands = candidates.size();
+            n_distances_ += n_cands;
+
+            // Compute distances to candidates
+            dists.resize(n_cands);
+            for (int i = 0; i < n_cands; ++i) {
+                int32_t idx = candidates[i];
+                const float* pt = &data_[idx * dim_];
+                float s = 0.0f;
+                for (int d = 0; d < dim_; ++d) {
+                    float diff = pt[d] - q[d];
+                    s += diff * diff;
+                }
+                dists[i] = {s, idx};
+            }
+
+            sort_k = std::min(k, n_cands);
+            std::partial_sort(dists.begin(), dists.begin() + sort_k, dists.end(),
+                [](const std::pair<float,int32_t>& a,
+                   const std::pair<float,int32_t>& b){ return a.first < b.first; });
+        }
 
         py::array_t<int64_t> result(sort_k);
         int64_t* res = static_cast<int64_t*>(result.request().ptr);
@@ -147,7 +157,7 @@ private:
     std::vector<float> data_;
     std::vector<std::vector<float>> projections_;
     std::vector<std::unordered_map<uint32_t, std::vector<int32_t>>> tables_;
-    int64_t n_distances_ = 0;
+    std::atomic<int64_t> n_distances_{0};
 
     inline uint32_t compute_signature(const float* vec, int t) const {
         uint32_t sig = 0;

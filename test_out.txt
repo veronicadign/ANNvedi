@@ -1,0 +1,20 @@
+Test modules imported successfully.
+
+--- Running Workspace Test Cases in Parallel ---
+test_logic.test_fit_query... PASSED
+test_logic.test_self_neighbor... PASSED
+test_hnsw.test_hnsw_self_neighbor... PASSED
+test_hnsw.test_hnsw_lsh_float... PASSED
+test_logic.test_distance_counter... PASSED
+test_lsh.test_lsh_self_neighbor... PASSED
+test_lsh.test_lsh_fit_query... PASSED
+test_hnsw.test_hnsw_flexible_params... PASSED
+test_lsh.test_lsh_distance_counter... PASSED
+test_lsh.test_algorithm_lsh_backend... PASSED
+test_lsh.test_algorithm_linear_unchanged... PASSED
+test_hnsw.test_hnsw_float... PASSED
+test_hnsw.test_hnsw_sq8... PASSED
+test_hnsw.test_hnsw_lsh... PASSED
+test_hnsw.test_hnsw_lsh_sq8... PASSED
+
+Test Summary: 15 passed, 0 failed.

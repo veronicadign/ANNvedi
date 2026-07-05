@@ -13,3 +13,8 @@ __pycache__/
 # Data
 datasets/*
 dataset/*
+**/*.hdf5
+**/*.db
+*.pem
+**/__pycache__/
+**/*.pyc

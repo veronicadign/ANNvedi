@@ -1,13 +1,33 @@
 scenarios:
   high_recall:
     default:
-      index_params: {M: 16, ef_construction: 100}
+      index_params: {M: 16, ef_construction: 100, mode: float}
       query_params: {ef: 250}
   fast:
     default:
-      index_params: {M: 8, ef_construction: 100}
+      index_params: {M: 8, ef_construction: 100, mode: float}
       query_params: {ef: 120}
   memory:
     default:
-      index_params: {M: 8, ef_construction: 100}
+      index_params: {M: 8, ef_construction: 100, mode: float}
       query_params: {ef: 400}
+  sq8_high_recall:
+    default:
+      index_params: {M: 16, ef_construction: 100, mode: sq8}
+      query_params: {ef: 250}
+  sq8_fast:
+    default:
+      index_params: {M: 8, ef_construction: 100, mode: sq8}
+      query_params: {ef: 120}
+  lsh_fast:
+    default:
+      index_params: {M: 16, ef_construction: 100, mode: lsh}
+      query_params: {ef: 250}
+  lsh_sq8_hybrid:
+    default:
+      index_params: {M: 16, ef_construction: 100, mode: lsh_sq8}
+      query_params: {ef: 250}
+  lsh_float_hybrid:
+    default:
+      index_params: {M: 16, ef_construction: 100, mode: lsh_float}
+      query_params: {ef: 250}

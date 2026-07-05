@@ -7,6 +7,9 @@ class Algorithm:
         self._index = multiprobe_lsh_cpp.MultiProbeLSH()
 
     def fit(self, train: np.ndarray, **index_params) -> None:
+        ds_size = index_params.get('ds_size', None)
+        if ds_size is not None:
+            train = train[:int(ds_size)]
         n_tables    = int(index_params.get('n_tables',    10))
         n_bits      = int(index_params.get('n_bits',       8))
         train = np.asarray(train, dtype=np.float32)
