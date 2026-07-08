@@ -9,6 +9,7 @@ if os.path.exists(build_dir):
 
 from competitors.lsh_optimized.algorithm import Algorithm as OptimizedLSHAlgorithm
 from competitors.lsh_simple.algorithm import Algorithm as SimpleLSHAlgorithm
+from competitors.ivf_lsh.algorithm import Algorithm as IVFLSHAlgorithm
 
 def test_lsh_fit_query():
     data = np.random.rand(50, 16).astype(np.float32)
@@ -29,8 +30,8 @@ def test_lsh_distance_counter():
     data = np.random.rand(20, 8).astype(np.float32)
     idx = OptimizedLSHAlgorithm()
     idx.fit(data, n_tables=10, n_bits=8)
-    idx.query(data[0], 3)
-    idx.query(data[1], 3)
+    res = idx.query(data[0], 3)
+    res = idx.query(data[1], 3)
     assert idx.get_n_distances() > 0
 
 def test_algorithm_lsh_backend():
@@ -43,6 +44,13 @@ def test_algorithm_lsh_backend():
 def test_lsh_simple_fit_query():
     data = np.random.rand(50, 16).astype(np.float32)
     idx = SimpleLSHAlgorithm()
+    idx.fit(data, n_tables=10, n_bits=8)
+    res = idx.query(data[0], 5)
+    assert len(res) == 5
+
+def test_ivf_lsh_fit_query():
+    data = np.random.rand(50, 16).astype(np.float32)
+    idx = IVFLSHAlgorithm()
     idx.fit(data, n_tables=10, n_bits=8)
     res = idx.query(data[0], 5)
     assert len(res) == 5

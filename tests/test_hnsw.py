@@ -7,7 +7,12 @@ build_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../build'))
 if os.path.exists(build_dir):
     sys.path.insert(0, build_dir)
 
-from competitors.hnsw.algorithm import Algorithm
+# Add competitors/ANNvedi-demo to path for importing the algorithm wrapper
+demo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../competitors/ANNvedi-demo'))
+if os.path.exists(demo_dir):
+    sys.path.insert(0, demo_dir)
+ 
+from algorithm import Algorithm
 
 def test_hnsw_float():
     data = np.random.rand(50, 16).astype(np.float32)

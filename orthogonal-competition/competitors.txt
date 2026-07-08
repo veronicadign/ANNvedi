@@ -1,0 +1,4 @@
+competitors/faiss-hnsw
+../competitors/ANNvedi-demo
+../competitors/ivf_lsh
+../competitors/lsh_optimized
