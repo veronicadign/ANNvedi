@@ -69,6 +69,20 @@ libstdc++ (gcc-11 era) is older than the system compiler. Either prefix commands
 `LD_PRELOAD=/usr/lib64/libstdc++.so.6` or upgrade the runtime once:
 `conda install -c conda-forge "libstdcxx-ng>=13"`.
 
+### Run the whole matrix locally (all datasets × all scenarios)
+```bash
+python3 scripts/run_matrix.py                              # full matrix, harness-faithful semantics
+python3 scripts/run_matrix.py --subset 100000 --queries 200   # fast iteration loop
+python3 scripts/run_matrix.py --datasets yahoo-minilm-public --scenario memory
+python3 scripts/run_matrix.py --algorithm competitors/ivf_lsh/algorithm.py   # evaluate a bundle
+python3 scripts/run_matrix.py --list                       # show which params each cell resolves to
+```
+One fresh process per (dataset, scenario) cell — like the evaluator's fresh container —
+with per-query timing, evaluator-identical recall@100, index memory, and a per-cell
+1800 s timeout. Results print as a matrix table and land in
+`experiments/results/matrix_<timestamp>.json`. It handles the conda libstdc++ preload
+automatically. Official scores still come from the Docker evaluator below.
+
 ### Evaluate bundles under the real harness (Docker)
 ```bash
 cd orthogonal-competition

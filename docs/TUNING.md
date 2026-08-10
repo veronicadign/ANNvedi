@@ -51,6 +51,9 @@ Evidence base:
 
 ## How to fill a cell
 
+0. Measure the current state of the whole matrix:
+   `python3 scripts/run_matrix.py` (full) or `--subset 100000 --queries 200` (quick pass).
+   Single cell: `python3 scripts/run_matrix.py --datasets <stem> --scenario <name>`.
 1. Local sweep on a subset (`experiments/dense_sweep.py` pattern, or
    `experiments/compare_all_datasets.py` for a 20k-subset cross-dataset pass).
 2. Verify the shortlist on the **full** dataset, single-threaded query loop
