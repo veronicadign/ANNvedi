@@ -23,13 +23,13 @@ variants = [
     },
     {
         "name": "HNSW",
-        "algo_path": "HNSW/algorithm.py",
-        "scenarios_path": "HNSW/scenarios.yaml"
+        "algo_path": "archive/HNSW/algorithm.py",
+        "scenarios_path": "archive/HNSW/scenarios.yaml"
     },
     {
         "name": "MultiProbe LSH",
-        "algo_path": "MultiProbe_LSH/algorithm.py",
-        "scenarios_path": "MultiProbe_LSH/scenarios.yaml"
+        "algo_path": "archive/MultiProbe_LSH/algorithm.py",
+        "scenarios_path": "archive/MultiProbe_LSH/scenarios.yaml"
     }
 ]
 

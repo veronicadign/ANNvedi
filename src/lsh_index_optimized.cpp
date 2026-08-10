@@ -106,7 +106,12 @@ static void lsh_worker(int start, int end, int thread_id, void* arg) {
         // Threshold is the distance of the worst element in the local top-k
         float threshold = local_top_k[limit_k - 1].first;
         
-        float diff_sum = compute_l2_distance_quantized(pt, ud->q_shifted, ud->dim, scale, threshold);
+        // NOTE: must be the *_shifted variant. src/simd.h also has a 6-arg
+        // compute_l2_distance_quantized(a, b, dim, scale, offset, threshold);
+        // calling that one with these 5 args would silently bind offset=threshold
+        // and produce wrong distances (this file was written against the 5-arg
+        // shifted header that still lives in competitors/lsh_optimized/src/simd.h).
+        float diff_sum = compute_l2_distance_quantized_shifted(pt, ud->q_shifted, ud->dim, scale, threshold);
         ud->dists[i] = {diff_sum, idx};
         
         if (diff_sum < threshold) {

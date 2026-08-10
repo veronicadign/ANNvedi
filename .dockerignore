@@ -1,0 +1,24 @@
+# Build context for the ROOT submission image (Dockerfile at repo root).
+# The image only needs: algorithm.py, scenarios.yaml, linear_ann/, lsh_ann/,
+# src/, setup.py, pyproject.toml, requirements.txt.
+# Everything else (multi-GB datasets, archives, the harness) stays out.
+.git
+.vscode
+.claude
+dataset/
+archive/
+build/
+notebooks/
+docs/
+experiments/
+tests/
+scripts/
+competitors/
+orthogonal-competition/
+__pycache__/
+*.egg-info
+*.so
+*.hdf5
+*.db
+*.pyc
+README.md

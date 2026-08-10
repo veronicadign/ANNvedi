@@ -35,7 +35,7 @@ n_clusters_range = [128, 256]
 n_probe_clusters_range = list(range(4, 25)) # step 1
 n_probes_range = list(range(0, 16))        # step 1
 
-results_file = "scratch/dense_sweep_results.json"
+results_file = "experiments/results/dense_sweep_results.json"
 results = []
 
 # Load existing results if any to allow resume

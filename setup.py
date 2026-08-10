@@ -34,6 +34,14 @@ ext_modules = [
         extra_compile_args=["-O3", "-ffast-math", "-march=native", "-pthread"],
         extra_link_args=["-pthread"],
     ),
+    Pybind11Extension(
+        "multiprobe_lsh_cpp",
+        ["src/multiprobe_lsh.cpp"],
+        cxx_std=14,
+        include_dirs=["src"],
+        extra_compile_args=["-O3", "-ffast-math", "-march=native", "-pthread"],
+        extra_link_args=["-pthread"],
+    ),
 ]
 
 setup(

@@ -2,7 +2,14 @@ import os
 import time
 import h5py
 import numpy as np
-from HNSW.algorithm import Algorithm
+import importlib.util
+
+# The HNSW-only Algorithm wrapper now lives in archive/HNSW/ (run from repo root)
+_spec = importlib.util.spec_from_file_location("hnsw_algorithm", "archive/HNSW/algorithm.py")
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)
+Algorithm = _mod.Algorithm
+
 from linear_ann.wrapper import LinearANN
 
 dataset_path = "dataset/yahoo-minilm-public.hdf5"

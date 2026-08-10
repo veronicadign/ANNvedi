@@ -1,7 +1,7 @@
 import json
 import os
 
-results_file = "scratch/dense_sweep_results.json"
+results_file = "experiments/results/dense_sweep_results.json"
 if not os.path.exists(results_file):
     print("No sweep results file found!")
     exit(1)

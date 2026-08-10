@@ -2,7 +2,7 @@ import gdown
 import os
 
 folder_id = "1kDMoujUUYc0DbAMw4WGRtlXcruEVFCEd"
-output_dir = "datasets"
+output_dir = "dataset"  # repo convention: singular dataset/ dir
 
 os.makedirs(output_dir, exist_ok=True)
 
