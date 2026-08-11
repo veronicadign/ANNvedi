@@ -49,6 +49,57 @@ Evidence base:
 
 ✓ = measured on the full dataset. Everything else is extrapolation — measure before trusting.
 
+## The k=100 regime (why the old low-ef configs are dead)
+
+The evaluator queries with **k=100**, and `hnsw_cpp` floors `ef` at `k` — so every
+query runs a ≥100-wide beam no matter what `ef` the scenario asks for. Consequences:
+
+- The `fast` scenario's `ef: 30` is silently `ef: 100`; low-ef tuning knowledge from
+  the k∈{5,10} era does not transfer. The remaining HNSW speed levers are **M**
+  (graph degree), build mode, and the backend choice itself.
+- Recall saturates: at 100k subsets, M=16/ef=100 scores recall 1.0000 on every
+  dataset tried. The bar (0.95) is likely reachable even at full scale with modest
+  params — measure, don't overspend.
+
+**Neighbor-selection heuristic (graph sparsity/diversity, `heuristic: true`)**:
+implemented in `src/hnsw.cpp` (`fit(..., heuristic=)`), measured 2026-08-10 at 100k
+subsets, sq8, k=100:
+
+| cell | heuristic OFF | heuristic ON |
+|---|---|---|
+| yahoo × high_recall  | 3666 qps, build 16s | 3172 qps, build 31s |
+| yahoo × fast         | 5121 qps, build 6s  | 4376 qps, build 10s |
+| simplewiki × high_recall | 1333 qps, build 61s | 835 qps, build 224s |
+| simplewiki × fast    | 2097 qps, build 23s | 1228 qps, build 76s |
+
+With recall already at ceiling, diversity edges only widen the beam's exploration
+(more distance evals) and slow the build — so the **default is OFF**; it can pay
+off only where recall misses the bar at ef=100 (the offline tuner sweeps both).
+
+## Offline tuning (final-machine procedure)
+
+Fit-time auto-tuning was removed (build time is scored). On the competition machine:
+
+```bash
+python3 setup.py build_ext --inplace && mv -f *.so build/
+python3 scripts/tune_parameters.py                 # hours; sweeps hnsw + ivf_lsh per dataset
+# review scenarios.tuned.yaml + the tuning report, then merge into the
+# submission's scenarios.yaml and rebuild the Docker image
+```
+
+The tuner fits each build config once and scans all query configs on it, verifies
+finalists in fresh processes (clean memory numbers), picks per-scenario winners per
+dataset, emits `-private`-twin blocks, and derives a robust cross-dataset `default`.
+`--quick` smoke-tests the pipeline; `--from-json` re-selects without re-measuring.
+
+Safety rails (added after review, 2026-08-11): memory-scenario finalists are ranked
+by an analytic index-size estimate (measured RSS still decides among them); if every
+finalist misses its recall bar on fresh-process re-measurement, the pool widens to
+the next feasible configs instead of shipping a below-bar block; configs that ever
+return fewer than k ids are disqualified (the harness raises on short results);
+sweep children save incrementally so a timeout keeps completed builds, and a dataset
+whose sweep fails is excluded from the `default` computation rather than erasing it.
+
 ## How to fill a cell
 
 0. Measure the current state of the whole matrix:

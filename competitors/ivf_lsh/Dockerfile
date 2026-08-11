@@ -1,6 +1,8 @@
 FROM ann-orthogonal/base:latest
 
-RUN pip install --no-cache-dir pybind11 scikit-learn scipy
+# sklearn/scipy no longer needed: fit-time GP tuning was replaced by offline
+# per-dataset tuning (scripts/tune_parameters.py -> scenarios.yaml)
+RUN pip install --no-cache-dir pybind11
 
 # Copy self-contained source files
 COPY . /app/source

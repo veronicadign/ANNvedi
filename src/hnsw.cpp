@@ -40,7 +40,8 @@ public:
     // ------------------------------------------------------------------
     // Build the index
     // ------------------------------------------------------------------
-    void fit(py::array_t<float> data, int M, int ef_construction, const std::string& mode = "float") {
+    void fit(py::array_t<float> data, int M, int ef_construction, const std::string& mode = "float",
+             bool heuristic = false) {
         py::buffer_info buf = data.request();
         if (buf.ndim != 2)
             throw std::runtime_error("Input must be 2D");
@@ -51,6 +52,7 @@ public:
         Mmax0_           = 2 * M;          // layer-0 gets 2×M edges
         ef_construction_ = ef_construction;
         ml_              = 1.0 / std::log((double)M);  // level multiplier
+        heuristic_       = heuristic;
 
         if (mode == "sq8") {
             mode_ = 1;
@@ -274,6 +276,9 @@ private:
 
     int mode_ = 0; // 0 = Float, 1 = SQ8, 2 = LSH, 3 = Hybrid LSH-SQ8, 4 = Hybrid LSH-Float
     bool is_building_ = false;
+    bool heuristic_ = false;  // diversity-based neighbor selection; default OFF —
+                              // at the competition's k=100 recall saturates and the
+                              // extra edges only cost QPS/build time (docs/TUNING.md)
 
     std::vector<float>   data_;
     std::vector<int>     level_;
@@ -380,14 +385,16 @@ private:
             // If closest unexplored candidate is farther than current worst result, stop
             if (d_c > W.top().first) break;
 
-            // Copy node's neighbors under striped lock to prevent concurrent modification data races during build
-            std::vector<int32_t> neighbors;
+            // During build: copy the node's neighbors under the striped lock to
+            // prevent data races with concurrent inserts. At query time the
+            // graph is immutable — read it in place (the copy per hop was a
+            // measurable allocation cost on the hot path).
+            std::vector<int32_t> neighbors_copy;
             if (is_building_) {
                 std::lock_guard<std::mutex> lock(node_locks_[c % LOCK_POOL_SIZE]);
-                neighbors = graph_[c][layer];
-            } else {
-                neighbors = graph_[c][layer];
+                neighbors_copy = graph_[c][layer];
             }
+            const std::vector<int32_t>& neighbors = is_building_ ? neighbors_copy : graph_[c][layer];
 
             int n_neighbors = neighbors.size();
             for (int idx = 0; idx < n_neighbors; ++idx) {
@@ -428,48 +435,96 @@ private:
     }
 
     // ------------------------------------------------------------------
-    // Select M_max nearest neighbors from a max-heap (drains the heap)
-    // Returns indices sorted nearest-first
+    // Neighbor selection core.
+    //
+    // Input: candidates as (dist_to_base, idx), sorted nearest-first.
+    //
+    // heuristic_=false  -> keep the M_max nearest (original behaviour).
+    // heuristic_=true   -> diversity pruning (Malkov & Yashunin, Alg. 4):
+    //   keep a candidate only if it is closer to the base node than to every
+    //   neighbor kept so far. Dominated edges (both endpoints on the same
+    //   side of the base) are redundant for navigation, so dropping them
+    //   keeps the graph SPARSE in dense regions while spending the edge
+    //   budget on long/diverse links -> better navigability than picking
+    //   the closest (near-random within a cluster) nodes. Discarded
+    //   candidates back-fill leftover slots (keepPrunedConnections).
+    //
+    // All heuristic distances use exact float vectors (data_ is always
+    // retained), so the rule stays valid in sq8/lsh build modes too.
     // ------------------------------------------------------------------
-    std::vector<int32_t> select_neighbors(MaxHeap& W, int M_max) {
-        std::vector<Pair> tmp;
-        tmp.reserve(W.size());
-        while (!W.empty()) { tmp.push_back(W.top()); W.pop(); }
-        // tmp[0] = furthest, tmp[back] = nearest
-        int take = std::min((int)tmp.size(), M_max);
-        std::vector<int32_t> result(take);
-        for (int i = 0; i < take; ++i)
-            result[i] = tmp[tmp.size() - 1 - i].second;
-        return result;   // result[0] = nearest
+    std::vector<int32_t> select_from_sorted(const std::vector<Pair>& cand, int M_max) const {
+        std::vector<int32_t> selected;
+        selected.reserve(M_max);
+        if (!heuristic_ || (int)cand.size() <= M_max) {
+            for (const auto& p : cand) {
+                if ((int)selected.size() >= M_max) break;
+                selected.push_back(p.second);
+            }
+            return selected;
+        }
+
+        std::vector<int32_t> discarded;
+        for (const auto& [d_base, e] : cand) {
+            if ((int)selected.size() >= M_max) break;
+            const float* pe = &data_[e * dim_];
+            bool diverse = true;
+            for (int32_t s : selected) {
+                // early-exit threshold: we only care whether d(e,s) < d(e,base)
+                float d_es = compute_l2_distance(&data_[s * dim_], pe, dim_, d_base);
+                if (d_es < d_base) { diverse = false; break; }
+            }
+            if (diverse) selected.push_back(e);
+            else         discarded.push_back(e);
+        }
+        // keepPrunedConnections: top up with the nearest discarded candidates
+        for (size_t i = 0; i < discarded.size() && (int)selected.size() < M_max; ++i)
+            selected.push_back(discarded[i]);
+        return selected;
+    }
+
+    // Drain a search_layer result heap into candidates (nearest-first) and
+    // run neighbor selection on them.
+    std::vector<int32_t> select_neighbors(MaxHeap& W, int M_max, const float* base_q) {
+        std::vector<Pair> cand;
+        cand.reserve(W.size());
+        while (!W.empty()) { cand.push_back(W.top()); W.pop(); }
+        std::reverse(cand.begin(), cand.end());   // nearest-first (build metric)
+
+        if (heuristic_) {
+            int cur_mode = mode_;
+            if (mode_ == 3 || mode_ == 4) cur_mode = 2;   // lsh-hybrid builds search on hamming
+            if (cur_mode == 2) {
+                // Hamming heap distances are not comparable with the float
+                // pair-distances used by the diversity rule: recompute in
+                // float and re-sort. (float and sq8 heap distances are
+                // already on the L2 scale — no recompute needed.)
+                for (auto& p : cand)
+                    p.first = compute_l2_distance(&data_[p.second * dim_], base_q, dim_);
+                std::sort(cand.begin(), cand.end());
+            }
+        }
+        return select_from_sorted(cand, M_max);
     }
 
     // ------------------------------------------------------------------
-    // Prune connections of a node to at most M_max (keep nearest)
+    // Prune connections of a node to at most M_max.
+    // Uses the same selection core as insertion (diversity heuristic when
+    // enabled). Distances are computed ONCE up front — the previous version
+    // recomputed them inside the sort comparator (O(n log n) distance
+    // evaluations per prune) and always kept the plain nearest.
     // ------------------------------------------------------------------
     void prune(int node, int layer, int M_max) {
         auto& nbrs = graph_[node][layer];
         if ((int)nbrs.size() <= M_max) return;
         const float* q = &data_[node * dim_];
-        uint64_t q_sig = (mode_ == 2 || mode_ == 3 || mode_ == 4) ? signatures_[node] : 0;
 
-        int cur_mode = mode_;
-        if (mode_ == 3) {
-            cur_mode = is_building_ ? 2 : 1;
-        } else if (mode_ == 4) {
-            cur_mode = is_building_ ? 2 : 0;
-        }
+        std::vector<Pair> cand;
+        cand.reserve(nbrs.size());
+        for (int32_t e : nbrs)
+            cand.push_back({compute_l2_distance(&data_[e * dim_], q, dim_), e});
+        std::sort(cand.begin(), cand.end());   // nearest-first
 
-        std::sort(nbrs.begin(), nbrs.end(), [&](int a, int b) {
-            if (cur_mode == 1) {
-                return compute_l2_distance_quantized(&quantized_data_[a * dim_], q, dim_, scale_, offset_) < 
-                       compute_l2_distance_quantized(&quantized_data_[b * dim_], q, dim_, scale_, offset_);
-            } else if (cur_mode == 2) {
-                return __builtin_popcountll(q_sig ^ signatures_[a]) < __builtin_popcountll(q_sig ^ signatures_[b]);
-            } else {
-                return dist_to(a, q) < dist_to(b, q);
-            }
-        });
-        nbrs.resize(M_max);
+        nbrs = select_from_sorted(cand, M_max);
     }
 
     // ------------------------------------------------------------------
@@ -515,7 +570,7 @@ private:
             MaxHeap W = search_layer(q, q_sig, ep, ef_construction_, lc, false, tracker);
             ep = nearest_in(W);   // best found so far → entry for next layer
 
-            auto neighbors = select_neighbors(W, M_max);
+            auto neighbors = select_neighbors(W, M_max, q);
             graph_[idx][lc] = neighbors;
 
             for (int32_t nb : neighbors) {
@@ -541,7 +596,8 @@ PYBIND11_MODULE(hnsw_cpp, m) {
     py::class_<HNSWIndex>(m, "HNSWIndex")
         .def(py::init<>())
         .def("fit",   &HNSWIndex::fit,
-             py::arg("data"), py::arg("M") = 16, py::arg("ef_construction") = 100, py::arg("mode") = "float")
+             py::arg("data"), py::arg("M") = 16, py::arg("ef_construction") = 100, py::arg("mode") = "float",
+             py::arg("heuristic") = false)
         .def("query", &HNSWIndex::query,
              py::arg("query"), py::arg("k"), py::arg("ef") = 50, py::arg("refine_r") = -1)
         .def("total_distances_count", &HNSWIndex::total_distances_count)

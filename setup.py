@@ -42,6 +42,19 @@ ext_modules = [
         extra_compile_args=["-O3", "-ffast-math", "-march=native", "-pthread"],
         extra_link_args=["-pthread"],
     ),
+    # The newest IVF-LSH fork (per-dimension SQ8 scales, mean-centered
+    # projections) lives only in the ivf_lsh bundle. Build it here too so the
+    # dev facade / tuner can use it. NOTE: it must compile against ITS OWN
+    # simd.h (incompatible per-dim signature) - quoted #include resolves to
+    # the sibling header, so keep its include dir, never src/.
+    Pybind11Extension(
+        "ivf_lsh_cpp",
+        ["competitors/ivf_lsh/src/lsh_index_optimized.cpp"],
+        cxx_std=14,
+        include_dirs=["competitors/ivf_lsh/src"],
+        extra_compile_args=["-O3", "-ffast-math", "-march=native", "-pthread"],
+        extra_link_args=["-pthread"],
+    ),
 ]
 
 setup(

@@ -92,6 +92,15 @@ just build-all-containers          # builds ann-orthogonal/base FIRST (required 
 Inspect results with `notebooks/competitor_evaluation.ipynb`.
 Note: `datasets.txt` currently lists 6 of the 7 datasets — `gooaq-distilroberta` is missing.
 
+### Final-machine tuning (run once on the competition machine)
+```bash
+python3 scripts/tune_parameters.py        # sweeps hnsw + ivf_lsh per dataset × scenario,
+                                          # writes scenarios.tuned.yaml + a tuning report
+```
+Fit-time auto-tuning is intentionally removed from the algorithms (build time is a
+scored metric): all parameter search happens offline here, and the results ship in
+`scenarios.yaml`. See `docs/TUNING.md` for the procedure and the k=100 regime notes.
+
 ### Tune a (scenario, dataset) cell
 1. Read `docs/TUNING.md` for what is already known (chosen configs, dataset properties).
 2. Sweep locally (`experiments/dense_sweep.py`, `experiments/compare_all_datasets.py`) or
