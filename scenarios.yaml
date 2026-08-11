@@ -1,13 +1,46 @@
+# Scenario configs for the root facade (algorithm.py).
+# Defaults measured on FULL yahoo-minilm (676k x 384), k=100, 1000 queries,
+# single-thread, 2026-08-11 — see docs/TUNING.md "Full-scale benchmark".
+# heuristic: true is deliberate: at full scale it is worth ~+0.05 recall at
+# equal ef (the earlier "OFF is better" call was a 100k-subset artifact).
+# Re-run scripts/tune_parameters.py on the competition machine for the
+# per-dataset blocks; these defaults are the best measured fallback.
 scenarios:
   high_recall:
+    # bar: recall >= 0.95 -> measured 0.9614 @ 0.579ms, build 274s
     default:
-      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8}
-      query_params: {ef: 80}
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}
+    yahoo-minilm-public:
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}
+    yahoo-minilm-private:
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}
   fast:
+    # bar: recall >= 0.85 -> measured 0.8755 @ 0.368ms, build 83s
+    # (ef 80 floors to k=100 inside hnsw_cpp)
     default:
-      index_params: {backend: hnsw, M: 8, ef_construction: 64, mode: sq8}
-      query_params: {ef: 30}
+      index_params: {backend: hnsw, M: 8, ef_construction: 64, mode: sq8, heuristic: true}
+      query_params: {ef: 80}
+    yahoo-minilm-public:
+      index_params: {backend: hnsw, M: 8, ef_construction: 64, mode: sq8, heuristic: true}
+      query_params: {ef: 80}
+    yahoo-minilm-private:
+      index_params: {backend: hnsw, M: 8, ef_construction: 64, mode: sq8, heuristic: true}
+      query_params: {ef: 80}
   memory:
+    # bar: recall >= 0.95 -> same config as high_recall (0.9614): the only
+    # measured config above the bar at full scale. The old lsh/ivf_lsh picks
+    # collapse at 676k/k=100 (ivf_lsh 20/8/512 measures recall ~0.58-0.60).
+    # KNOWN RISK: the 2x-faiss speed gate (~0.44ms here) is exceeded (0.58ms)
+    # — see docs/TUNING.md for the open work on this cell.
     default:
-      index_params: {backend: lsh, n_tables: 25, n_bits: 10, n_clusters: 256}
-      query_params: {n_probes: 12, n_probe_clusters: 24, refine_r: 100}
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}
+    yahoo-minilm-public:
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}
+    yahoo-minilm-private:
+      index_params: {backend: hnsw, M: 16, ef_construction: 100, mode: sq8, heuristic: true}
+      query_params: {ef: 120}

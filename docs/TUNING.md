@@ -22,9 +22,9 @@ scenario. Fill cells as they get tuned; every claim should point at its evidence
 
 | scenario | current default (root `scenarios.yaml`) | verified alternatives / evidence |
 |---|---|---|
-| `high_recall` | HNSW sq8, M=16, efC=100, ef=80 | IVF-LSH (20,10,256, probe_cl=16, probes=10) full-dataset verified in `experiments/verify_single_threaded.py`; shortlist in `verify_final_95_sweep.py` |
-| `fast` | HNSW sq8, M=8, efC=64, ef=30 | IVF-LSH (9,7,256, probe_cl=6, probes=6) verified in `verify_single_threaded.py`; shortlist in `verify_sweep_85.py` |
-| `memory` | IVF-LSH backend=lsh (25,10,256, probes=12, probe_cl=24, refine_r=100) | `competitors/ivf_lsh` auto-tunes at fit time (GP, reads `SCENARIO_NAME`); SQ8 storage is the memory lever |
+| `high_recall` | HNSW sq8, M=16, efC=100, **heuristic ON**, ef=120 — **0.9614 @ 0.579ms**, build 274s (full yahoo, k=100) | ef=110 → 0.9564; ef=140 → 0.9686 @ 0.644ms. Older IVF-LSH shortlists predate the k=100 regime — do not trust |
+| `fast` | HNSW sq8, M=8, efC=64, **heuristic ON**, ef=80→100 — **0.8755 @ 0.368ms**, build 83s (full yahoo) | M=12/efC=80 heurON: 0.9252 @ 0.562ms (more margin, slower); heurON M8 builds FASTER than heurOFF (83s vs 110s: sparser graph) |
+| `memory` | same config as `high_recall` — the only measured config ≥0.95 at full scale | **OPEN CELL**: exceeds the 2×-faiss speed gate; old lsh/ivf_lsh picks collapse at full scale (see full-scale benchmark below) |
 
 Evidence base:
 - `experiments/results/dense_sweep_results.json` — 27,600 measured IVF-LSH configs
@@ -57,9 +57,10 @@ query runs a ≥100-wide beam no matter what `ef` the scenario asks for. Consequ
 - The `fast` scenario's `ef: 30` is silently `ef: 100`; low-ef tuning knowledge from
   the k∈{5,10} era does not transfer. The remaining HNSW speed levers are **M**
   (graph degree), build mode, and the backend choice itself.
-- Recall saturates: at 100k subsets, M=16/ef=100 scores recall 1.0000 on every
-  dataset tried. The bar (0.95) is likely reachable even at full scale with modest
-  params — measure, don't overspend.
+- Recall saturates **at 100k subsets only**: M=16/ef=100 scores recall 1.0000 on
+  every dataset tried there, but this DOES NOT transfer — on full yahoo (676k) the
+  same config w/o heuristic measures 0.899. Never pick configs from subset recall;
+  sweep full datasets (the full-scale benchmark below is the cautionary tale).
 
 **Neighbor-selection heuristic (graph sparsity/diversity, `heuristic: true`)**:
 implemented in `src/hnsw.cpp` (`fit(..., heuristic=)`), measured 2026-08-10 at 100k
@@ -73,8 +74,55 @@ subsets, sq8, k=100:
 | simplewiki × fast    | 2097 qps, build 23s | 1228 qps, build 76s |
 
 With recall already at ceiling, diversity edges only widen the beam's exploration
-(more distance evals) and slow the build — so the **default is OFF**; it can pay
-off only where recall misses the bar at ef=100 (the offline tuner sweeps both).
+(more distance evals) and slow the build — so the default was set to OFF.
+
+**CORRECTION (2026-08-11, full-scale benchmark):** that conclusion was a 100k-subset
+artifact — at 100k recall sits at 1.0 either way, so the heuristic could only show
+its costs. On the FULL dataset it is worth **~+0.05 recall at equal ef** (0.899 →
+0.947 at M16/ef100) and is the difference between failing and passing the 0.95 bar.
+`scenarios.yaml` defaults now set `heuristic: true`; the module-level default stays
+`false` (backward-compatible for 4-arg callers / frozen baselines). At small M the
+heuristic even builds FASTER (M8: 83s vs 110s). OFF remains worth sweeping only
+where recall saturates at full scale too.
+
+## Full-scale benchmark vs faiss (2026-08-11, local machine)
+
+Full yahoo-minilm (676,305 × 384), 1000 queries, k=100, single-thread queries,
+multithread builds, evaluator-style recall against file GT. faiss-cpu 1.15.0,
+`IndexHNSWFlat` exactly as the official baseline competitor runs it.
+
+| config | recall@100 | mean ms | qps | build |
+|---|---|---|---|---|
+| faiss M16/efC100, efSearch=50 (baseline cfg) | 0.8484 | 0.221 | 4532 | 148s |
+| faiss efSearch=100 | 0.9336 | 0.348 | 2872 | " |
+| faiss efSearch=200 | 0.9746 | 0.621 | 1609 | " |
+| ours sq8 M16/efC100 heurOFF, ef→100 | 0.8988 | 0.558 | 1793 | 202s |
+| ours sq8 M16/efC100 heurOFF, ef=200 | 0.9476 | 0.839 | 1192 | " |
+| ours sq8 M8/efC64 heurOFF, ef→100 | 0.7598 | 0.520 | 1924 | 110s |
+| ours sq8 M16/efC100 **heurON**, ef→100 | 0.9467 | 0.781 | 1280 | 411s* |
+| ours sq8 M16/efC100 **heurON**, ef=120 | 0.9614 | 0.579 | 1727 | 274s* |
+| ours sq8 M16/efC100 **heurON**, ef=200 | 0.9811 | 1.150 | 870 | " |
+| ours sq8 M8/efC64 **heurON**, ef→100 | 0.8755 | 0.368 | 2717 | 83s |
+| ours ivf_lsh 20/8/512, probes 8–20, r≤300 | 0.58–0.60 | 0.36–0.41 | — | 137s |
+
+\* same build config; 411s vs 274s is machine-load variance across runs.
+
+Takeaways:
+- faiss does NOT floor efSearch at k (50 vs 100 differ) — our `ef = max(ef, k)`
+  floor removes the fast/low-recall end of our curve entirely.
+- With heuristic ON our recall-per-ef BEATS faiss (0.947 vs 0.934 at ef=100); the
+  remaining gap is per-query speed (~2× slower at matched recall — distance-kernel
+  throughput, not graph quality) and build time.
+- IVF-LSH collapses at full scale under k=100 (recall ~0.6 where the 30k smoke
+  measured 1.0) — its old `memory` pick was never revalidated in this regime.
+
+### Open work on the `memory` cell
+- Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
+  config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.
+- Big memory lever: in sq8 mode with `refine_r=-1` the retained float `data_`
+  (~993MB on yahoo) is unused at query time — dropping it post-build would roughly
+  halve index RSS. Needs a `fit` option in `src/hnsw.cpp` (heuristic uses `data_`
+  during build, so free it after construction, and forbid refine at query time).
 
 ## Offline tuning (final-machine procedure)
 
