@@ -20,11 +20,15 @@ scenario. Fill cells as they get tuned; every claim should point at its evidence
 
 ### Chosen configs so far (all measured on yahoo-minilm unless noted)
 
-| scenario | current default (root `scenarios.yaml`) | verified alternatives / evidence |
-|---|---|---|
-| `high_recall` | HNSW sq8, M=16, efC=100, **heuristic ON**, ef=120 — **0.9614 @ 0.579ms**, build 274s (full yahoo, k=100) | ef=110 → 0.9564; ef=140 → 0.9686 @ 0.644ms. Older IVF-LSH shortlists predate the k=100 regime — do not trust |
-| `fast` | HNSW sq8, M=8, efC=64, **heuristic ON**, ef=80→100 — **0.8755 @ 0.368ms**, build 83s (full yahoo) | M=12/efC=80 heurON: 0.9252 @ 0.562ms (more margin, slower); heurON M8 builds FASTER than heurOFF (83s vs 110s: sparser graph) |
-| `memory` | same config as `high_recall` — the only measured config ≥0.95 at full scale | **OPEN CELL**: exceeds the 2×-faiss speed gate; old lsh/ivf_lsh picks collapse at full scale (see full-scale benchmark below) |
+`scenarios.yaml` now carries measured per-dataset blocks for all 7 datasets (see
+the matrix below). Cross-dataset defaults (what an unknown stem would hit):
+`high_recall` M16/efC100/heurON/ef120, `fast` M8/efC64/heurON/ef120,
+`memory` M8/efC64/heurON/ef300 — all sq8.
+
+Still open on `memory`: recall clears the bar everywhere, but the ≤2×-faiss speed
+gate (~0.44ms on this machine) is exceeded by every ≥0.95 config measured
+(0.46-1.35ms) — closing it needs kernel speed work, and actual RSS ranking beyond
+the analytic estimate needs a verified tuner run on the competition machine.
 
 Evidence base:
 - `experiments/results/dense_sweep_results.json` — 27,600 measured IVF-LSH configs
@@ -35,19 +39,30 @@ Evidence base:
   faiss-hnsw baseline numbers.
 - HNSW mode profiling (float / sq8 / lsh at ef 40/120/250): `experiments/profile_hnsw.py`.
 
-### Backend picks per cell (hypotheses to validate)
+### Measured per-dataset picks (2026-08-11, focused sweep on FULL datasets)
 
-| dataset ↓ / scenario → | high_recall (≥.95, speed) | fast (≥.80–.85, speed) | memory (≥.95, min RAM) |
+All cells: HNSW sq8 + **heuristic ON**; only M/efC and ef vary. Every cell clears
+its bar (high_recall/memory ≥ 0.955 = bar+margin, fast ≥ 0.855). Sweep:
+`--grid focused --backends hnsw --no-verify --queries 1000`, all 1000 file-GT
+queries, k=100, single-thread, local machine. Full measurements:
+`experiments/results/tuning_20260811_210929.json` (re-select via `--from-json`).
+
+| dataset ↓ / scenario → | high_recall | fast | memory (recall; RSS unverified) |
 |---|---|---|---|
-| agnews-mxbai        | HNSW sq8 (check recall: non-normalized!) | HNSW sq8 low-ef | ivf_lsh SQ8 |
-| celeba-resnet       | HNSW sq8 (same caveat) | HNSW sq8 low-ef | ivf_lsh SQ8 |
-| gooaq-distilroberta | HNSW sq8 | HNSW sq8 low-ef | ivf_lsh SQ8 |
-| imagenet-clip       | HNSW sq8 | HNSW sq8 low-ef | ivf_lsh SQ8 |
-| landmark-nomic      | HNSW sq8, low ef should hit .95 | HNSW very low ef | ivf_lsh SQ8 |
-| simplewiki-openai   | HNSW needs higher M/efC here | HNSW sq8 | **critical cell**: 3072-dim → SQ8 at minimum, consider stronger compression |
-| yahoo-minilm        | HNSW sq8 M16/ef80 ✓ or IVF-LSH (20,10,256,16,10) ✓ | IVF-LSH (9,7,256,6,6) ✓ or HNSW M8/ef30 | IVF-LSH (25,10,256,12/24,r100) |
+| agnews-mxbai        | M16/ef120: .9684 @ .68ms | M8/ef120: .9231 @ .50ms | M8/ef250: .9636 @ .90ms |
+| celeba-resnet       | M16/ef120: .9629 @ .84ms | M8/ef120: .8867 @ .58ms | M8/ef300: .9569 @ 1.28ms |
+| gooaq-distilroberta | M16/ef100: .9617 @ .84ms | M8/ef100: .9125 @ .73ms | M8/ef200: .9554 @ .99ms |
+| imagenet-clip       | M8/ef170:  .9603 @ .69ms | M8/ef120: .9389 @ .57ms | M8/ef170: .9603 @ .69ms |
+| landmark-nomic      | M8/ef120:  .9643 @ .46ms | M8/ef120: .9643 @ .46ms | M8/ef120: .9643 @ .46ms |
+| simplewiki-openai   | M16/ef100: .9568 @ .99ms | M8/ef120: .9149 @ .73ms | M8/ef250: .9563 @ 1.35ms |
+| yahoo-minilm        | M16/ef120: .9615 @ .58ms | M8/ef100: .8785 @ .41ms | M8/ef300: .9578 @ .83ms |
 
-✓ = measured on the full dataset. Everything else is extrapolation — measure before trusting.
+Notes: M16 builds are 2.5-3x slower than M8 (e.g. gooaq 1041s vs 387s) — where M8
+passes high_recall (landmark, imagenet), it wins on build time too. The memory
+column picks the smaller M8 graph via the analytic estimate; actual RSS was not
+re-verified locally (`--no-verify`) — run the tuner with verification on the
+competition machine for the final word. The old ivf_lsh memory hypotheses are dead
+at full scale (recall ~0.6, see full-scale benchmark).
 
 ## The k=100 regime (why the old low-ef configs are dead)
 

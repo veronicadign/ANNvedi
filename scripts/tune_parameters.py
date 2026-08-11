@@ -66,10 +66,31 @@ SCENARIOS = ("high_recall", "fast", "memory")
 # Search grids
 # ---------------------------------------------------------------------------
 
-def build_grids(k, quick=False):
+def build_grids(k, grid="full"):
     """Return {backend: (build_configs, query_configs)}.
     Build config keys go to index_params, query config keys to query_params."""
-    if quick:
+    if grid == "focused":
+        # The slice of the space that full-scale benchmarking showed matters
+        # (docs/TUNING.md "Full-scale benchmark"): sq8 + heuristic ON, two
+        # build shapes, ef as the recall lever (hnsw floors ef at k).
+        return {
+            "hnsw": (
+                [
+                    {"M": 16, "ef_construction": 100, "mode": "sq8", "heuristic": True},
+                    {"M": 8, "ef_construction": 64, "mode": "sq8", "heuristic": True},
+                ],
+                [{"ef": ef} for ef in (100, 120, 140, 170, 200, 250, 300)],
+            ),
+            "ivf_lsh": (
+                [{"n_tables": 20, "n_bits": 8, "n_clusters": 512}],
+                [
+                    {"n_probes": p, "n_probe_clusters": pc, "refine_r": 2 * k}
+                    for p in (8, 14)
+                    for pc in (16, 24)
+                ],
+            ),
+        }
+    if grid == "quick":
         return {
             "hnsw": (
                 [{"M": 16, "ef_construction": 100, "mode": "sq8", "heuristic": True}],
@@ -497,7 +518,12 @@ def main():
     ap.add_argument("--subset", type=int, default=None, help="train subset for the sweep (default: full train)")
     ap.add_argument("--fast-bar", type=float, default=0.85)
     ap.add_argument("--margin", type=float, default=0.005, help="safety margin added to every recall bar")
-    ap.add_argument("--quick", action="store_true", help="tiny grids — smoke test only")
+    ap.add_argument("--quick", action="store_true", help="tiny grids — smoke test only (alias for --grid quick)")
+    ap.add_argument("--grid", choices=("full", "quick", "focused"), default="full",
+                    help="search-grid preset; 'focused' = the benchmark-informed hnsw slice")
+    ap.add_argument("--no-verify", action="store_true",
+                    help="skip fresh-process verification; pick winners straight from sweep numbers "
+                         "(use when the sweep already ran on the full dataset)")
     ap.add_argument("--timeout", type=int, default=7200, help="per (dataset,backend) sweep timeout")
     ap.add_argument("--style", choices=("facade", "ivf_lsh"), default="facade",
                     help="facade: blocks include backend (root algorithm.py); ivf_lsh: params only")
@@ -529,7 +555,8 @@ def main():
         # its own params, so hnsw configs would be emitted and silently ignored
         print("--style ivf_lsh: restricting backends to ivf_lsh (bundle can't run anything else)")
         backends = ["ivf_lsh"]
-    grids = build_grids(args.k, quick=args.quick)
+    grid = "quick" if args.quick else args.grid
+    grids = build_grids(args.k, grid=grid)
 
     # ---------- Phase A: sweep ----------
     if args.from_json:
@@ -570,7 +597,7 @@ def main():
                     "k": args.k,
                     "queries": args.queries,
                     "subset": args.subset,
-                    "quick": args.quick,
+                    "grid": grid,
                     "measurements_by_dataset": meas_by_dataset,
                 },
                 f,
@@ -613,11 +640,14 @@ def main():
             if not ms:
                 continue
             finalists, feasible = select_for_scenario(ms, scen, args.fast_bar, args.margin)
-            verified = []
-            for cand in finalists:
-                res = verify_one(ds, cand)
-                if res.get("status") == "ok":
-                    verified.append({**cand, **res})
+            if args.no_verify:
+                verified = list(finalists)  # trust the sweep numbers (full-dataset sweeps)
+            else:
+                verified = []
+                for cand in finalists:
+                    res = verify_one(ds, cand)
+                    if res.get("status") == "ok":
+                        verified.append({**cand, **res})
             bar = scenario_bar(scen, args.fast_bar) + args.margin
             ok = [m for m in verified if usable(m) and m["recall"] >= bar]
             if feasible and not ok:
