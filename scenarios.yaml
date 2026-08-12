@@ -160,7 +160,7 @@ scenarios:
         backend: hnsw
         M: 8
         ef_construction: 64
-        mode: sq8
+        mode: sq8pd
         heuristic: true
       query_params:
         ef: 100
@@ -240,7 +240,7 @@ scenarios:
         backend: hnsw
         M: 8
         ef_construction: 64
-        mode: sq8
+        mode: sq8pd
         heuristic: true
       query_params:
         ef: 200

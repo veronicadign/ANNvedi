@@ -138,6 +138,24 @@ Takeaways:
   latency everywhere, gooaq misses both bars outright (best 0.8285), and builds run
   214–2139s (vs 83–387s for HNSW M8). No scenario/prize dimension favors it.
 
+### Per-dimension SQ8 (`mode: sq8pd`, added 2026-08-12)
+
+Ported the IVF-LSH fork's per-dimension quantization into `hnsw_cpp` (each dim
+gets its own [min,max]; query pre-shifted once per search; kernel in
+`src/simd.h`). Query/build cost identical to `sq8`. Measured ef-for-ef on full
+datasets (M16 and M8 heurON builds): **a per-dataset lever, not a universal
+win** — although per-element quantization error is strictly smaller, the graph
+is also *built* with these distances, and graph-quality shifts dominate:
+
+- gooaq: better on both measured cells (fast M8/ef100 0.9153 vs 0.9125, memory
+  M8/ef200 0.9579 vs 0.9554 — was the thinnest margin in the matrix) → adopted
+  in `scenarios.yaml` for those two cells.
+- yahoo / celeba / agnews: neutral (±0.001-0.005, largest gains only at low ef).
+- simplewiki: WORSE (M8/ef250 0.9531 vs 0.9563; M8/ef120 −0.006) → kept on sq8.
+
+Sweep it alongside sq8 in future tuner runs (add to the focused grid when
+retuning on the competition machine).
+
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
   config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.
