@@ -1,0 +1,5314 @@
+{
+ "k": 100,
+ "queries": 1000,
+ "subset": null,
+ "grid": "ivf refine-cap sweep",
+ "measurements_by_dataset": {
+  "agnews-mxbai-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5182,
+    "mean_query_ms": 0.7675,
+    "median_query_ms": 0.7627,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6551,
+    "mean_query_ms": 0.6501,
+    "median_query_ms": 0.6459,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5182,
+    "mean_query_ms": 0.7908,
+    "median_query_ms": 0.7825,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6551,
+    "mean_query_ms": 0.6486,
+    "median_query_ms": 0.6481,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5182,
+    "mean_query_ms": 0.7898,
+    "median_query_ms": 0.7836,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6551,
+    "mean_query_ms": 0.653,
+    "median_query_ms": 0.6512,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.5558,
+    "mean_query_ms": 1.4352,
+    "median_query_ms": 1.4693,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7759,
+    "mean_query_ms": 1.1865,
+    "median_query_ms": 1.1815,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.5575,
+    "mean_query_ms": 1.4967,
+    "median_query_ms": 1.4912,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7759,
+    "mean_query_ms": 1.1885,
+    "median_query_ms": 1.1848,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.5575,
+    "mean_query_ms": 1.5053,
+    "median_query_ms": 1.5077,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7759,
+    "mean_query_ms": 1.1937,
+    "median_query_ms": 1.1889,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.5637,
+    "mean_query_ms": 2.2231,
+    "median_query_ms": 2.1844,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8889,
+    "mean_query_ms": 2.6917,
+    "median_query_ms": 2.68,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.5752,
+    "mean_query_ms": 3.0712,
+    "median_query_ms": 3.0603,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8889,
+    "mean_query_ms": 2.7059,
+    "median_query_ms": 2.6902,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.5799,
+    "mean_query_ms": 3.732,
+    "median_query_ms": 3.7821,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8889,
+    "mean_query_ms": 2.7106,
+    "median_query_ms": 2.7043,
+    "build_time_s": 475.76,
+    "est_index_mb": 871.0,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5902,
+    "mean_query_ms": 1.0339,
+    "median_query_ms": 1.034,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.721,
+    "mean_query_ms": 0.8667,
+    "median_query_ms": 0.8658,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5902,
+    "mean_query_ms": 1.0548,
+    "median_query_ms": 1.047,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.721,
+    "mean_query_ms": 0.8714,
+    "median_query_ms": 0.8662,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5902,
+    "mean_query_ms": 1.058,
+    "median_query_ms": 1.051,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.721,
+    "mean_query_ms": 0.8744,
+    "median_query_ms": 0.8694,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.6206,
+    "mean_query_ms": 1.6506,
+    "median_query_ms": 1.663,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8177,
+    "mean_query_ms": 1.4715,
+    "median_query_ms": 1.4649,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.6303,
+    "mean_query_ms": 1.9679,
+    "median_query_ms": 1.996,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8177,
+    "mean_query_ms": 1.4796,
+    "median_query_ms": 1.4688,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.6304,
+    "mean_query_ms": 1.9983,
+    "median_query_ms": 2.0139,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8177,
+    "mean_query_ms": 1.4767,
+    "median_query_ms": 1.4702,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.6245,
+    "mean_query_ms": 2.2253,
+    "median_query_ms": 2.2066,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.9097,
+    "mean_query_ms": 3.1831,
+    "median_query_ms": 3.1824,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.6432,
+    "mean_query_ms": 3.1678,
+    "median_query_ms": 3.1388,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9104,
+    "mean_query_ms": 3.2012,
+    "median_query_ms": 3.1872,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.6532,
+    "mean_query_ms": 4.5193,
+    "median_query_ms": 4.7,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9104,
+    "mean_query_ms": 3.2469,
+    "median_query_ms": 3.1999,
+    "build_time_s": 962.73,
+    "est_index_mb": 977.7,
+    "short_results": 0,
+    "n_train": 768382,
+    "dim": 1024
+   }
+  ],
+  "celeba-resnet-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5949,
+    "mean_query_ms": 2.1924,
+    "median_query_ms": 1.9626,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.632,
+    "mean_query_ms": 1.7154,
+    "median_query_ms": 1.5025,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6044,
+    "mean_query_ms": 2.0218,
+    "median_query_ms": 1.7848,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.632,
+    "mean_query_ms": 1.7277,
+    "median_query_ms": 1.4808,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6051,
+    "mean_query_ms": 1.7403,
+    "median_query_ms": 1.6041,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.632,
+    "mean_query_ms": 1.4441,
+    "median_query_ms": 1.3332,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.6527,
+    "mean_query_ms": 2.4198,
+    "median_query_ms": 2.2639,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7901,
+    "mean_query_ms": 2.8728,
+    "median_query_ms": 2.7242,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.6833,
+    "mean_query_ms": 3.4149,
+    "median_query_ms": 3.3567,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7912,
+    "mean_query_ms": 2.8143,
+    "median_query_ms": 2.6758,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.6916,
+    "mean_query_ms": 3.7086,
+    "median_query_ms": 3.4336,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7912,
+    "mean_query_ms": 2.7612,
+    "median_query_ms": 2.6344,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.662,
+    "mean_query_ms": 3.4393,
+    "median_query_ms": 3.424,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8744,
+    "mean_query_ms": 4.7869,
+    "median_query_ms": 4.6019,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.706,
+    "mean_query_ms": 4.873,
+    "median_query_ms": 4.7668,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9317,
+    "mean_query_ms": 5.684,
+    "median_query_ms": 5.6453,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.7232,
+    "mean_query_ms": 8.0639,
+    "median_query_ms": 7.7989,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9362,
+    "mean_query_ms": 8.0491,
+    "median_query_ms": 7.481,
+    "build_time_s": 234.51,
+    "est_index_mb": 471.1,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6335,
+    "mean_query_ms": 2.6224,
+    "median_query_ms": 2.573,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6925,
+    "mean_query_ms": 2.6538,
+    "median_query_ms": 2.5899,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6638,
+    "mean_query_ms": 3.3302,
+    "median_query_ms": 3.1929,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6931,
+    "mean_query_ms": 2.8681,
+    "median_query_ms": 2.7605,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6688,
+    "mean_query_ms": 3.8187,
+    "median_query_ms": 3.4312,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6931,
+    "mean_query_ms": 3.008,
+    "median_query_ms": 2.9133,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.6642,
+    "mean_query_ms": 3.8102,
+    "median_query_ms": 3.6651,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.798,
+    "mean_query_ms": 4.5273,
+    "median_query_ms": 4.3821,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7279,
+    "mean_query_ms": 5.2332,
+    "median_query_ms": 5.1435,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8349,
+    "mean_query_ms": 4.5461,
+    "median_query_ms": 4.383,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7507,
+    "mean_query_ms": 5.7591,
+    "median_query_ms": 5.6949,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8352,
+    "mean_query_ms": 4.6923,
+    "median_query_ms": 4.5851,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.6648,
+    "mean_query_ms": 4.2253,
+    "median_query_ms": 4.1911,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8056,
+    "mean_query_ms": 5.6091,
+    "median_query_ms": 5.3584,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.7389,
+    "mean_query_ms": 5.9085,
+    "median_query_ms": 5.8714,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.91,
+    "mean_query_ms": 7.9489,
+    "median_query_ms": 7.8373,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.776,
+    "mean_query_ms": 10.0728,
+    "median_query_ms": 9.9298,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9532,
+    "mean_query_ms": 9.9441,
+    "median_query_ms": 9.8183,
+    "build_time_s": 1239.94,
+    "est_index_mb": 568.9,
+    "short_results": 0,
+    "n_train": 200599,
+    "dim": 2048
+   }
+  ],
+  "gooaq-distilroberta-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.493,
+    "mean_query_ms": 0.5952,
+    "median_query_ms": 0.5917,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5061,
+    "mean_query_ms": 0.5162,
+    "median_query_ms": 0.5089,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.493,
+    "mean_query_ms": 0.6121,
+    "median_query_ms": 0.606,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5061,
+    "mean_query_ms": 0.52,
+    "median_query_ms": 0.5146,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.493,
+    "mean_query_ms": 0.6189,
+    "median_query_ms": 0.6153,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5061,
+    "mean_query_ms": 0.5288,
+    "median_query_ms": 0.5232,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.5516,
+    "mean_query_ms": 1.1495,
+    "median_query_ms": 1.1471,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.6357,
+    "mean_query_ms": 0.9942,
+    "median_query_ms": 0.9829,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.5516,
+    "mean_query_ms": 1.1425,
+    "median_query_ms": 1.1405,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.6357,
+    "mean_query_ms": 0.9924,
+    "median_query_ms": 0.9883,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.5516,
+    "mean_query_ms": 1.1493,
+    "median_query_ms": 1.1453,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.6357,
+    "mean_query_ms": 0.9912,
+    "median_query_ms": 0.9851,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.5823,
+    "mean_query_ms": 2.2018,
+    "median_query_ms": 2.1895,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.7885,
+    "mean_query_ms": 2.2481,
+    "median_query_ms": 2.2333,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.5951,
+    "mean_query_ms": 2.7591,
+    "median_query_ms": 2.7376,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.7885,
+    "mean_query_ms": 2.2511,
+    "median_query_ms": 2.239,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.5952,
+    "mean_query_ms": 2.7419,
+    "median_query_ms": 2.7423,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.7885,
+    "mean_query_ms": 2.2624,
+    "median_query_ms": 2.2506,
+    "build_time_s": 642.1,
+    "est_index_mb": 1253.6,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.565,
+    "mean_query_ms": 0.7691,
+    "median_query_ms": 0.7674,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5941,
+    "mean_query_ms": 0.6709,
+    "median_query_ms": 0.6682,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.565,
+    "mean_query_ms": 0.7845,
+    "median_query_ms": 0.7798,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5941,
+    "mean_query_ms": 0.6719,
+    "median_query_ms": 0.669,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.565,
+    "mean_query_ms": 0.7924,
+    "median_query_ms": 0.7861,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5941,
+    "mean_query_ms": 0.6759,
+    "median_query_ms": 0.6743,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.621,
+    "mean_query_ms": 1.389,
+    "median_query_ms": 1.3954,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7111,
+    "mean_query_ms": 1.1413,
+    "median_query_ms": 1.1375,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.6214,
+    "mean_query_ms": 1.4158,
+    "median_query_ms": 1.4092,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7111,
+    "mean_query_ms": 1.1451,
+    "median_query_ms": 1.1399,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.6214,
+    "mean_query_ms": 1.4119,
+    "median_query_ms": 1.4102,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7111,
+    "mean_query_ms": 1.1528,
+    "median_query_ms": 1.1487,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.6355,
+    "mean_query_ms": 2.1354,
+    "median_query_ms": 2.1226,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8285,
+    "mean_query_ms": 2.4953,
+    "median_query_ms": 2.4866,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.6593,
+    "mean_query_ms": 3.0329,
+    "median_query_ms": 3.0243,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8285,
+    "mean_query_ms": 2.5339,
+    "median_query_ms": 2.5105,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.6642,
+    "mean_query_ms": 3.3885,
+    "median_query_ms": 3.3935,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8285,
+    "mean_query_ms": 2.5359,
+    "median_query_ms": 2.5174,
+    "build_time_s": 1476.29,
+    "est_index_mb": 1373.2,
+    "short_results": 0,
+    "n_train": 1474024,
+    "dim": 768
+   }
+  ],
+  "imagenet-clip-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6259,
+    "mean_query_ms": 0.5316,
+    "median_query_ms": 0.4952,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6089,
+    "mean_query_ms": 0.512,
+    "median_query_ms": 0.472,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6259,
+    "mean_query_ms": 0.5729,
+    "median_query_ms": 0.5383,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6089,
+    "mean_query_ms": 0.5343,
+    "median_query_ms": 0.5036,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6259,
+    "mean_query_ms": 0.5604,
+    "median_query_ms": 0.5309,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6089,
+    "mean_query_ms": 0.5277,
+    "median_query_ms": 0.4937,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7267,
+    "mean_query_ms": 1.0434,
+    "median_query_ms": 0.9956,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7484,
+    "mean_query_ms": 1.0599,
+    "median_query_ms": 0.9926,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7267,
+    "mean_query_ms": 1.082,
+    "median_query_ms": 1.029,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7484,
+    "mean_query_ms": 1.058,
+    "median_query_ms": 0.993,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7267,
+    "mean_query_ms": 1.1315,
+    "median_query_ms": 1.0807,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7484,
+    "mean_query_ms": 1.0824,
+    "median_query_ms": 1.02,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.7919,
+    "mean_query_ms": 2.4312,
+    "median_query_ms": 2.3516,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8878,
+    "mean_query_ms": 2.3095,
+    "median_query_ms": 2.184,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.7939,
+    "mean_query_ms": 2.1038,
+    "median_query_ms": 2.0403,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8878,
+    "mean_query_ms": 2.0083,
+    "median_query_ms": 1.9372,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.7939,
+    "mean_query_ms": 2.1854,
+    "median_query_ms": 2.1085,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8878,
+    "mean_query_ms": 2.0943,
+    "median_query_ms": 2.0267,
+    "build_time_s": 494.69,
+    "est_index_mb": 783.8,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.711,
+    "mean_query_ms": 0.4538,
+    "median_query_ms": 0.4435,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.7084,
+    "mean_query_ms": 0.447,
+    "median_query_ms": 0.4429,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.711,
+    "mean_query_ms": 0.4579,
+    "median_query_ms": 0.4461,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.7084,
+    "mean_query_ms": 0.4534,
+    "median_query_ms": 0.4486,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.711,
+    "mean_query_ms": 0.4653,
+    "median_query_ms": 0.4542,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.7084,
+    "mean_query_ms": 0.4603,
+    "median_query_ms": 0.4518,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7941,
+    "mean_query_ms": 0.8556,
+    "median_query_ms": 0.8409,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8216,
+    "mean_query_ms": 0.8513,
+    "median_query_ms": 0.845,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7941,
+    "mean_query_ms": 0.8581,
+    "median_query_ms": 0.8432,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8216,
+    "mean_query_ms": 0.8572,
+    "median_query_ms": 0.8489,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7941,
+    "mean_query_ms": 0.8689,
+    "median_query_ms": 0.8511,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8216,
+    "mean_query_ms": 0.8641,
+    "median_query_ms": 0.8546,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8424,
+    "mean_query_ms": 1.6738,
+    "median_query_ms": 1.6672,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.9234,
+    "mean_query_ms": 1.8216,
+    "median_query_ms": 1.8144,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8504,
+    "mean_query_ms": 1.916,
+    "median_query_ms": 1.9007,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9234,
+    "mean_query_ms": 1.8288,
+    "median_query_ms": 1.8231,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.851,
+    "mean_query_ms": 1.9514,
+    "median_query_ms": 1.9035,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9234,
+    "mean_query_ms": 1.8291,
+    "median_query_ms": 1.821,
+    "build_time_s": 776.15,
+    "est_index_mb": 899.2,
+    "short_results": 0,
+    "n_train": 1280167,
+    "dim": 512
+   }
+  ],
+  "landmark-nomic-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.7022,
+    "mean_query_ms": 0.8437,
+    "median_query_ms": 0.7601,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6803,
+    "mean_query_ms": 0.6481,
+    "median_query_ms": 0.6052,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.7022,
+    "mean_query_ms": 0.6851,
+    "median_query_ms": 0.6422,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6803,
+    "mean_query_ms": 0.6412,
+    "median_query_ms": 0.5971,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.7022,
+    "mean_query_ms": 0.7011,
+    "median_query_ms": 0.6596,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6803,
+    "mean_query_ms": 0.6491,
+    "median_query_ms": 0.6082,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7938,
+    "mean_query_ms": 1.3318,
+    "median_query_ms": 1.2789,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8245,
+    "mean_query_ms": 1.2392,
+    "median_query_ms": 1.163,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7941,
+    "mean_query_ms": 1.3355,
+    "median_query_ms": 1.2724,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8245,
+    "mean_query_ms": 1.2866,
+    "median_query_ms": 1.2161,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7941,
+    "mean_query_ms": 1.3838,
+    "median_query_ms": 1.3142,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8245,
+    "mean_query_ms": 1.3235,
+    "median_query_ms": 1.2655,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8321,
+    "mean_query_ms": 2.6823,
+    "median_query_ms": 2.617,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.9373,
+    "mean_query_ms": 2.9978,
+    "median_query_ms": 2.9248,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8401,
+    "mean_query_ms": 3.4296,
+    "median_query_ms": 3.3348,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9373,
+    "mean_query_ms": 2.708,
+    "median_query_ms": 2.6049,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8413,
+    "mean_query_ms": 3.0519,
+    "median_query_ms": 2.9509,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9373,
+    "mean_query_ms": 2.9141,
+    "median_query_ms": 2.8054,
+    "build_time_s": 498.31,
+    "est_index_mb": 675.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.7807,
+    "mean_query_ms": 1.0677,
+    "median_query_ms": 0.9861,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.7751,
+    "mean_query_ms": 1.0274,
+    "median_query_ms": 0.9417,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.7807,
+    "mean_query_ms": 1.0127,
+    "median_query_ms": 0.9362,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.7751,
+    "mean_query_ms": 1.061,
+    "median_query_ms": 0.9698,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.7807,
+    "mean_query_ms": 1.0376,
+    "median_query_ms": 0.9737,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.7751,
+    "mean_query_ms": 1.0158,
+    "median_query_ms": 0.9315,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8541,
+    "mean_query_ms": 1.7402,
+    "median_query_ms": 1.6852,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.885,
+    "mean_query_ms": 1.9072,
+    "median_query_ms": 1.7801,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8571,
+    "mean_query_ms": 1.7988,
+    "median_query_ms": 1.7035,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.885,
+    "mean_query_ms": 1.7426,
+    "median_query_ms": 1.645,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8572,
+    "mean_query_ms": 1.915,
+    "median_query_ms": 1.7932,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.885,
+    "mean_query_ms": 1.6391,
+    "median_query_ms": 1.5247,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8732,
+    "mean_query_ms": 2.434,
+    "median_query_ms": 2.3616,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.9612,
+    "mean_query_ms": 3.1669,
+    "median_query_ms": 3.0708,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8875,
+    "mean_query_ms": 3.2302,
+    "median_query_ms": 3.1709,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9622,
+    "mean_query_ms": 3.3854,
+    "median_query_ms": 3.2766,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8917,
+    "mean_query_ms": 3.8778,
+    "median_query_ms": 3.7965,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9622,
+    "mean_query_ms": 3.2799,
+    "median_query_ms": 3.118,
+    "build_time_s": 1070.16,
+    "est_index_mb": 781.9,
+    "short_results": 0,
+    "n_train": 759757,
+    "dim": 768
+   }
+  ],
+  "simplewiki-openai-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.3923,
+    "mean_query_ms": 2.8989,
+    "median_query_ms": 2.796,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.7785,
+    "mean_query_ms": 2.3176,
+    "median_query_ms": 2.2376,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.4004,
+    "mean_query_ms": 4.0253,
+    "median_query_ms": 4.0651,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.7785,
+    "mean_query_ms": 2.306,
+    "median_query_ms": 2.2137,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.4008,
+    "mean_query_ms": 3.9967,
+    "median_query_ms": 3.9321,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.7785,
+    "mean_query_ms": 1.8844,
+    "median_query_ms": 1.8087,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.393,
+    "mean_query_ms": 3.1615,
+    "median_query_ms": 3.0676,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8468,
+    "mean_query_ms": 3.6256,
+    "median_query_ms": 3.527,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.4056,
+    "mean_query_ms": 5.1216,
+    "median_query_ms": 5.0234,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8468,
+    "mean_query_ms": 3.9856,
+    "median_query_ms": 3.8849,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.4129,
+    "mean_query_ms": 7.5031,
+    "median_query_ms": 7.5437,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8468,
+    "mean_query_ms": 3.6064,
+    "median_query_ms": 3.4863,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.393,
+    "mean_query_ms": 3.7107,
+    "median_query_ms": 3.595,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8825,
+    "mean_query_ms": 6.8283,
+    "median_query_ms": 6.7108,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.4057,
+    "mean_query_ms": 6.4296,
+    "median_query_ms": 6.3573,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9061,
+    "mean_query_ms": 8.2017,
+    "median_query_ms": 8.1123,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.414,
+    "mean_query_ms": 10.7387,
+    "median_query_ms": 10.3167,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9063,
+    "mean_query_ms": 8.2485,
+    "median_query_ms": 8.0747,
+    "build_time_s": 976.03,
+    "est_index_mb": 845.7,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.442,
+    "mean_query_ms": 4.004,
+    "median_query_ms": 3.8598,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.8112,
+    "mean_query_ms": 3.7623,
+    "median_query_ms": 3.6417,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.4592,
+    "mean_query_ms": 5.4572,
+    "median_query_ms": 5.3903,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.8112,
+    "mean_query_ms": 3.2445,
+    "median_query_ms": 3.142,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.4642,
+    "mean_query_ms": 7.1039,
+    "median_query_ms": 7.0809,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.8112,
+    "mean_query_ms": 3.6082,
+    "median_query_ms": 3.4986,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.442,
+    "mean_query_ms": 4.3446,
+    "median_query_ms": 4.1959,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.8673,
+    "mean_query_ms": 5.2753,
+    "median_query_ms": 5.1297,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.4603,
+    "mean_query_ms": 6.4426,
+    "median_query_ms": 6.3104,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.8756,
+    "mean_query_ms": 6.2445,
+    "median_query_ms": 6.1438,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.4738,
+    "mean_query_ms": 10.8449,
+    "median_query_ms": 10.6934,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.8756,
+    "mean_query_ms": 5.7704,
+    "median_query_ms": 5.7009,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.442,
+    "mean_query_ms": 4.3442,
+    "median_query_ms": 4.2362,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.869,
+    "mean_query_ms": 7.3248,
+    "median_query_ms": 7.0816,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.4603,
+    "mean_query_ms": 6.894,
+    "median_query_ms": 6.8102,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.9102,
+    "mean_query_ms": 10.663,
+    "median_query_ms": 10.5286,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.474,
+    "mean_query_ms": 12.1536,
+    "median_query_ms": 11.9228,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.9282,
+    "mean_query_ms": 13.1023,
+    "median_query_ms": 12.9778,
+    "build_time_s": 2138.81,
+    "est_index_mb": 946.6,
+    "short_results": 0,
+    "n_train": 259372,
+    "dim": 3072
+   }
+  ],
+  "yahoo-minilm-public": [
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.4905,
+    "mean_query_ms": 0.6536,
+    "median_query_ms": 0.6199,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5979,
+    "mean_query_ms": 0.5638,
+    "median_query_ms": 0.5125,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.4905,
+    "mean_query_ms": 0.6589,
+    "median_query_ms": 0.6224,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5979,
+    "mean_query_ms": 0.5562,
+    "median_query_ms": 0.51,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.4905,
+    "mean_query_ms": 0.6814,
+    "median_query_ms": 0.6319,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5979,
+    "mean_query_ms": 0.5813,
+    "median_query_ms": 0.5329,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.5323,
+    "mean_query_ms": 1.2169,
+    "median_query_ms": 1.1497,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7312,
+    "mean_query_ms": 1.1527,
+    "median_query_ms": 1.0121,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.5376,
+    "mean_query_ms": 1.1337,
+    "median_query_ms": 1.094,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7312,
+    "mean_query_ms": 0.8732,
+    "median_query_ms": 0.819,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.5376,
+    "mean_query_ms": 1.13,
+    "median_query_ms": 1.0936,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7312,
+    "mean_query_ms": 0.8739,
+    "median_query_ms": 0.8308,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.5355,
+    "mean_query_ms": 1.5067,
+    "median_query_ms": 1.433,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8632,
+    "mean_query_ms": 2.0762,
+    "median_query_ms": 1.9812,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.5547,
+    "mean_query_ms": 2.1562,
+    "median_query_ms": 2.0829,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8632,
+    "mean_query_ms": 2.1071,
+    "median_query_ms": 2.0404,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.5638,
+    "mean_query_ms": 3.0002,
+    "median_query_ms": 2.941,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 20,
+     "n_bits": 8,
+     "n_clusters": 512
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8632,
+    "mean_query_ms": 2.332,
+    "median_query_ms": 2.2189,
+    "build_time_s": 214.32,
+    "est_index_mb": 360.0,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.5684,
+    "mean_query_ms": 0.8452,
+    "median_query_ms": 0.77,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 400
+    },
+    "recall": 0.6781,
+    "mean_query_ms": 0.6224,
+    "median_query_ms": 0.573,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.5688,
+    "mean_query_ms": 0.7728,
+    "median_query_ms": 0.736,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 400
+    },
+    "recall": 0.6781,
+    "mean_query_ms": 0.6066,
+    "median_query_ms": 0.5675,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.5688,
+    "mean_query_ms": 0.7528,
+    "median_query_ms": 0.7266,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 400
+    },
+    "recall": 0.6781,
+    "mean_query_ms": 0.5962,
+    "median_query_ms": 0.5652,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.5902,
+    "mean_query_ms": 1.0931,
+    "median_query_ms": 1.0342,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 1000
+    },
+    "recall": 0.7896,
+    "mean_query_ms": 1.1477,
+    "median_query_ms": 1.0873,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.6108,
+    "mean_query_ms": 1.4768,
+    "median_query_ms": 1.4648,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 1000
+    },
+    "recall": 0.7896,
+    "mean_query_ms": 1.1472,
+    "median_query_ms": 1.0924,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.6119,
+    "mean_query_ms": 1.5577,
+    "median_query_ms": 1.5351,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 1000
+    },
+    "recall": 0.7896,
+    "mean_query_ms": 1.182,
+    "median_query_ms": 1.1145,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.5905,
+    "mean_query_ms": 1.4865,
+    "median_query_ms": 1.4341,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 16,
+     "refine_r": 2500
+    },
+    "recall": 0.8867,
+    "mean_query_ms": 2.5584,
+    "median_query_ms": 2.4678,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.6177,
+    "mean_query_ms": 2.393,
+    "median_query_ms": 2.2918,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 32,
+     "refine_r": 2500
+    },
+    "recall": 0.8942,
+    "mean_query_ms": 2.8124,
+    "median_query_ms": 2.7167,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 0,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.6337,
+    "mean_query_ms": 3.2113,
+    "median_query_ms": 3.0848,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   },
+   {
+    "backend": "ivf_lsh",
+    "index_params": {
+     "n_tables": 25,
+     "n_bits": 8,
+     "n_clusters": 1024
+    },
+    "query_params": {
+     "n_probes": 8,
+     "n_probe_clusters": 64,
+     "refine_r": 2500
+    },
+    "recall": 0.8942,
+    "mean_query_ms": 2.5015,
+    "median_query_ms": 2.4216,
+    "build_time_s": 403.71,
+    "est_index_mb": 463.7,
+    "short_results": 0,
+    "n_train": 676305,
+    "dim": 384
+   }
+  ]
+ }
+}

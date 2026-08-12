@@ -128,8 +128,15 @@ Takeaways:
 - With heuristic ON our recall-per-ef BEATS faiss (0.947 vs 0.934 at ef=100); the
   remaining gap is per-query speed (~2× slower at matched recall — distance-kernel
   throughput, not graph quality) and build time.
-- IVF-LSH collapses at full scale under k=100 (recall ~0.6 where the 30k smoke
-  measured 1.0) — its old `memory` pick was never revalidated in this regime.
+- IVF-LSH loses to HNSW on every dataset at full scale (complete sweep 2026-08-12,
+  `experiments/results/ivf_lsh_full_scale_20260812.json`). Root cause of the earlier
+  "recall ~0.6" reading: the C++ caps candidates at max(2000, 4×refine_r)
+  (`lsh_index_optimized.cpp:358`), so small refine_r values silently scan ≤2000
+  points. With refine_r up to 2500 and 1024 clusters the recall ceiling lifts to
+  0.83–0.96, but the price is 1.8–13ms/query: the ≥0.95 bar is reached only on
+  landmark (0.9612 @ 3.17ms — HNSW: 0.9643 @ 0.46ms), the fast bar costs 3–9× HNSW's
+  latency everywhere, gooaq misses both bars outright (best 0.8285), and builds run
+  214–2139s (vs 83–387s for HNSW M8). No scenario/prize dimension favors it.
 
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
