@@ -56,6 +56,8 @@ public:
 
         if (mode == "sq8") {
             mode_ = 1;
+        } else if (mode == "sq8pd") {
+            mode_ = 5;
         } else if (mode == "lsh") {
             mode_ = 2;
         } else if (mode == "lsh_sq8") {
@@ -91,7 +93,40 @@ public:
                 int qval = std::round((val - offset_) / scale_);
                 quantized_data_[i] = static_cast<uint8_t>(std::max(0, std::min(255, qval)));
             }
-        } 
+        }
+
+        // Per-dimension SQ8 (mode "sq8pd", ported from the IVF-LSH fork): each
+        // dimension gets its own [min,max] range, so quantization error follows
+        // the data's per-axis spread instead of the single global extreme.
+        if (mode_ == 5) {
+            pd_scale_.resize(dim_);
+            pd_offset_.resize(dim_);
+            for (int d = 0; d < dim_; ++d) {
+                float min_val = std::numeric_limits<float>::max();
+                float max_val = std::numeric_limits<float>::lowest();
+                for (int i = 0; i < npts_; ++i) {
+                    float val = data_[(size_t)i * dim_ + d];
+                    if (val < min_val) min_val = val;
+                    if (val > max_val) max_val = val;
+                }
+                if (max_val - min_val > 1e-8f) {
+                    pd_scale_[d] = (max_val - min_val) / 255.0f;
+                    pd_offset_[d] = min_val;
+                } else {
+                    pd_scale_[d] = 1.0f;
+                    pd_offset_[d] = 0.0f;
+                }
+            }
+            quantized_data_.resize(data_.size());
+            for (int i = 0; i < npts_; ++i) {
+                for (int d = 0; d < dim_; ++d) {
+                    float val = data_[(size_t)i * dim_ + d];
+                    int qval = (int)std::round((val - pd_offset_[d]) / pd_scale_[d]);
+                    quantized_data_[(size_t)i * dim_ + d] = static_cast<uint8_t>(std::max(0, std::min(255, qval)));
+                }
+            }
+        }
+
         
         // Perform LSH projection and signature calculations if LSH (2), Hybrid LSH-SQ8 (3), or Hybrid LSH-Float (4) is active
         if (mode_ == 2 || mode_ == 3 || mode_ == 4) {
@@ -274,7 +309,7 @@ private:
     static constexpr int LOCK_POOL_SIZE = 4096;
     mutable std::mutex node_locks_[LOCK_POOL_SIZE];
 
-    int mode_ = 0; // 0 = Float, 1 = SQ8, 2 = LSH, 3 = Hybrid LSH-SQ8, 4 = Hybrid LSH-Float
+    int mode_ = 0; // 0 = Float, 1 = SQ8, 2 = LSH, 3 = Hybrid LSH-SQ8, 4 = Hybrid LSH-Float, 5 = per-dim SQ8
     bool is_building_ = false;
     bool heuristic_ = false;  // diversity-based neighbor selection; default OFF —
                               // at the competition's k=100 recall saturates and the
@@ -289,6 +324,9 @@ private:
     std::vector<uint8_t> quantized_data_;
     float scale_ = 1.0f;
     float offset_ = 0.0f;
+    // per-dimension SQ8 (mode 5)
+    std::vector<float> pd_scale_;
+    std::vector<float> pd_offset_;
 
     // LSH members
     int n_bits_ = 64;
@@ -364,9 +402,22 @@ private:
             cur_mode = is_building_ ? 2 : 0; // LSH during build, Float during query
         }
 
+        // Per-dim SQ8: shift the query once per search so the hot loop is a
+        // single fmsub per element. thread_local → safe under the parallel build.
+        const float* q_shifted = nullptr;
+        if (cur_mode == 5) {
+            static thread_local std::vector<float> q_shift_buf;
+            q_shift_buf.resize(dim_);
+            for (int d = 0; d < dim_; ++d)
+                q_shift_buf[d] = q[d] - pd_offset_[d];
+            q_shifted = q_shift_buf.data();
+        }
+
         float d_ep;
         if (cur_mode == 1) {
             d_ep = compute_l2_distance_quantized(&quantized_data_[ep * dim_], q, dim_, scale_, offset_);
+        } else if (cur_mode == 5) {
+            d_ep = compute_l2_distance_quantized_pd(&quantized_data_[ep * dim_], q_shifted, dim_, pd_scale_.data());
         } else if (cur_mode == 2) {
             d_ep = static_cast<float>(__builtin_popcountll(q_sig ^ signatures_[ep]));
         } else {
@@ -404,7 +455,7 @@ private:
 
                 if (idx + 2 < n_neighbors) {
                     int32_t prefetch_node = neighbors[idx + 2];
-                    if (cur_mode == 1) {
+                    if (cur_mode == 1 || cur_mode == 5) {
                         __builtin_prefetch(&quantized_data_[prefetch_node * dim_], 0, 3);
                     } else {
                         __builtin_prefetch(&data_[prefetch_node * dim_], 0, 3);
@@ -415,6 +466,9 @@ private:
                 if (cur_mode == 1) {
                     float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
                     d_e = compute_l2_distance_quantized(&quantized_data_[e * dim_], q, dim_, scale_, offset_, threshold);
+                } else if (cur_mode == 5) {
+                    float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
+                    d_e = compute_l2_distance_quantized_pd(&quantized_data_[e * dim_], q_shifted, dim_, pd_scale_.data(), threshold);
                 } else if (cur_mode == 2) {
                     d_e = static_cast<float>(__builtin_popcountll(q_sig ^ signatures_[e]));
                 } else {

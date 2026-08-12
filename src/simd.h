@@ -312,3 +312,75 @@ inline float compute_l2_distance_quantized_shifted(const uint8_t* a, const float
     return sum;
 #endif
 }
+
+// Per-dimension SQ8 L2 distance (ported from the IVF-LSH fork's quantization):
+// each dimension has its own scale, and the query is pre-shifted once per
+// search as q_shifted[d] = q[d] - offset[d], so the inner loop is a single
+// fused multiply-subtract per element: diff = code[d]*scale[d] - q_shifted[d].
+inline float compute_l2_distance_quantized_pd(const uint8_t* a, const float* q_shifted, size_t dim,
+                                              const float* scale,
+                                              float threshold = std::numeric_limits<float>::max()) {
+#if defined(HAS_AVX512)
+    __m512 sum_vec = _mm512_setzero_ps();
+    size_t i = 0;
+    for (; i + 15 < dim; i += 16) {
+        __m128i v_bytes = _mm_loadu_si128((const __m128i*)(a + i));
+        __m512i v_ints = _mm512_cvtepu8_epi32(v_bytes);
+        __m512 v_floats = _mm512_cvtepi32_ps(v_ints);
+        __m512 v_scale = _mm512_loadu_ps(scale + i);
+        __m512 v_q_shifted = _mm512_loadu_ps(q_shifted + i);
+        __m512 diff = _mm512_fmsub_ps(v_floats, v_scale, v_q_shifted);
+        sum_vec = _mm512_fmadd_ps(diff, diff, sum_vec);
+        if (i % 96 == 80) {
+            float sum = reduce_add_ps_512(sum_vec);
+            if (sum >= threshold) return sum;
+        }
+    }
+    float sum = reduce_add_ps_512(sum_vec);
+    if (sum >= threshold) return sum;
+    for (; i < dim; ++i) {
+        float diff = a[i] * scale[i] - q_shifted[i];
+        sum += diff * diff;
+    }
+    return sum;
+#elif defined(HAS_AVX)
+    __m256 sum_vec = _mm256_setzero_ps();
+    size_t i = 0;
+    for (; i + 7 < dim; i += 8) {
+        uint64_t val;
+        std::memcpy(&val, a + i, 8);
+        __m128i v_bytes = _mm_cvtsi64_si128(val);
+        __m256i v_ints = _mm256_cvtepu8_epi32(v_bytes);
+        __m256 v_floats = _mm256_cvtepi32_ps(v_ints);
+        __m256 v_scale = _mm256_loadu_ps(scale + i);
+        __m256 v_q_shifted = _mm256_loadu_ps(q_shifted + i);
+        __m256 diff = _mm256_fmsub_ps(v_floats, v_scale, v_q_shifted);
+        sum_vec = _mm256_fmadd_ps(diff, diff, sum_vec);
+        if (i % 96 == 88) {
+            alignas(32) float temp[8];
+            _mm256_storeu_ps(temp, sum_vec);
+            float sum = temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7];
+            if (sum >= threshold) return sum;
+        }
+    }
+    alignas(32) float temp[8];
+    _mm256_storeu_ps(temp, sum_vec);
+    float sum = temp[0] + temp[1] + temp[2] + temp[3] + temp[4] + temp[5] + temp[6] + temp[7];
+    if (sum >= threshold) return sum;
+    for (; i < dim; ++i) {
+        float diff = a[i] * scale[i] - q_shifted[i];
+        sum += diff * diff;
+    }
+    return sum;
+#else
+    float sum = 0.0f;
+    for (size_t i = 0; i < dim; ++i) {
+        float diff = a[i] * scale[i] - q_shifted[i];
+        sum += diff * diff;
+        if (i % 16 == 15) {
+            if (sum >= threshold) return sum;
+        }
+    }
+    return sum;
+#endif
+}
