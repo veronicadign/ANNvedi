@@ -57,22 +57,19 @@ public:
         if (mode == "sq8") {
             mode_ = 1;
         } else if (mode == "sq8pd") {
-            mode_ = 5;
-        } else if (mode == "lsh") {
             mode_ = 2;
-        } else if (mode == "lsh_sq8") {
-            mode_ = 3;
-        } else if (mode == "lsh_float") {
-            mode_ = 4;
-        } else {
+        } else if (mode == "float") {
             mode_ = 0;
+        } else {
+            // the experimental lsh/hybrid modes live only in the dev repo
+            throw std::runtime_error("unknown mode '" + mode + "' (use float, sq8 or sq8pd)");
         }
 
         float* ptr = static_cast<float*>(buf.ptr);
         data_.assign(ptr, ptr + npts_ * dim_);
 
-        // Perform quantization if SQ8 (1) or Hybrid LSH-SQ8 (3) mode is active
-        if (mode_ == 1 || mode_ == 3) {
+        // Global-scale SQ8 quantization
+        if (mode_ == 1) {
             float min_val = std::numeric_limits<float>::max();
             float max_val = std::numeric_limits<float>::lowest();
             for (float val : data_) {
@@ -98,7 +95,7 @@ public:
         // Per-dimension SQ8 (mode "sq8pd", ported from the IVF-LSH fork): each
         // dimension gets its own [min,max] range, so quantization error follows
         // the data's per-axis spread instead of the single global extreme.
-        if (mode_ == 5) {
+        if (mode_ == 2) {
             pd_scale_.resize(dim_);
             pd_offset_.resize(dim_);
             for (int d = 0; d < dim_; ++d) {
@@ -128,48 +125,6 @@ public:
         }
 
         
-        // Perform LSH projection and signature calculations if LSH (2), Hybrid LSH-SQ8 (3), or Hybrid LSH-Float (4) is active
-        if (mode_ == 2 || mode_ == 3 || mode_ == 4) {
-            projections_.resize(n_bits_, std::vector<float>(dim_));
-            std::mt19937 gen(42);
-            std::normal_distribution<float> dist(0.0, 1.0);
-            for (int b = 0; b < n_bits_; ++b) {
-                for (int d = 0; d < dim_; ++d) {
-                    projections_[b][d] = dist(gen);
-                }
-            }
-
-            // Perform Gram-Schmidt orthogonalization to make projections orthogonal
-            if (n_bits_ <= dim_) {
-                for (int b = 0; b < n_bits_; ++b) {
-                    for (int b_prev = 0; b_prev < b; ++b_prev) {
-                        float dot = 0.0f;
-                        for (int d = 0; d < dim_; ++d) {
-                            dot += projections_[b][d] * projections_[b_prev][d];
-                        }
-                        for (int d = 0; d < dim_; ++d) {
-                            projections_[b][d] -= dot * projections_[b_prev][d];
-                        }
-                    }
-                    float norm = 0.0f;
-                    for (int d = 0; d < dim_; ++d) {
-                        norm += projections_[b][d] * projections_[b][d];
-                    }
-                    norm = std::sqrt(norm);
-                    if (norm > 1e-8f) {
-                        for (int d = 0; d < dim_; ++d) {
-                            projections_[b][d] /= norm;
-                        }
-                    }
-                }
-            }
-
-            signatures_.resize(npts_, 0);
-            for (int i = 0; i < npts_; ++i) {
-                signatures_[i] = compute_signature(&data_[i * dim_]);
-            }
-        }
-
         graph_.resize(npts_);
         level_.resize(npts_, 0);
 
@@ -227,8 +182,6 @@ public:
         const float* q = static_cast<const float*>(qbuf.ptr);
         ef = std::max(ef, k);
 
-        uint64_t q_sig = (mode_ == 2 || mode_ == 3 || mode_ == 4) ? compute_signature(q) : 0;
-
         int ep;
         int max_l;
         {
@@ -247,24 +200,24 @@ public:
             py::gil_scoped_release release;
             // Greedy descent: layers max_level → 1  (ef=1)
             for (int l = max_l; l > 0; --l) {
-                MaxHeap W = search_layer(q, q_sig, ep, 1, l, /*count=*/true, tracker);
+                MaxHeap W = search_layer(q, ep, 1, l, /*count=*/true, tracker);
                 ep = nearest_in(W);
             }
 
             // Full beam search at layer 0
-            MaxHeap W = search_layer(q, q_sig, ep, ef, 0, /*count=*/true, tracker);
+            MaxHeap W = search_layer(q, ep, ef, 0, /*count=*/true, tracker);
 
             results.reserve(W.size());
 
-            if (mode_ == 0 || mode_ == 4) {
-                // Float or LSH-Float mode: Heap already has exact L2 distances
+            if (mode_ == 0) {
+                // Float mode: Heap already has exact L2 distances
                 while (!W.empty()) {
                     results.push_back(W.top());
                     W.pop();
                 }
                 std::reverse(results.begin(), results.end());
             } else {
-                // SQ8 or Hybrid LSH-SQ8 mode: Rerank candidate list using exact floats
+                // Quantized modes: rerank the candidate list using exact floats
                 int actual_refine_r = (refine_r > 0) ? std::min(refine_r, (int)W.size()) : (int)W.size();
                 while ((int)W.size() > actual_refine_r) {
                     W.pop();
@@ -309,7 +262,7 @@ private:
     static constexpr int LOCK_POOL_SIZE = 4096;
     mutable std::mutex node_locks_[LOCK_POOL_SIZE];
 
-    int mode_ = 0; // 0 = Float, 1 = SQ8, 2 = LSH, 3 = Hybrid LSH-SQ8, 4 = Hybrid LSH-Float, 5 = per-dim SQ8
+    int mode_ = 0; // 0 = float, 1 = SQ8 (global scale), 2 = per-dimension SQ8
     bool is_building_ = false;
     bool heuristic_ = false;  // diversity-based neighbor selection; default OFF —
                               // at the competition's k=100 recall saturates and the
@@ -324,14 +277,9 @@ private:
     std::vector<uint8_t> quantized_data_;
     float scale_ = 1.0f;
     float offset_ = 0.0f;
-    // per-dimension SQ8 (mode 5)
+    // per-dimension SQ8 (mode 2)
     std::vector<float> pd_scale_;
     std::vector<float> pd_offset_;
-
-    // LSH members
-    int n_bits_ = 64;
-    std::vector<std::vector<float>> projections_;
-    std::vector<uint64_t> signatures_;
 
     // ------------------------------------------------------------------
     // Helpers
@@ -344,20 +292,6 @@ private:
     inline float dist_to_float(int node, const float* q) const {
         const float* p = &data_[node * dim_];
         return compute_l2_distance(p, q, dim_);
-    }
-
-    uint64_t compute_signature(const float* vec) const {
-        uint64_t sig = 0;
-        for (int b = 0; b < n_bits_; ++b) {
-            float dot = 0.0f;
-            for (int d = 0; d < dim_; ++d) {
-                dot += vec[d] * projections_[b][d];
-            }
-            if (dot > 0.0f) {
-                sig |= (1ULL << b);
-            }
-        }
-        return sig;
     }
 
     int random_level(std::mt19937& rng) {
@@ -378,7 +312,7 @@ private:
     // Core: beam search at one layer
     // Returns max-heap of (dist, idx) of size <= ef
     // ------------------------------------------------------------------
-    MaxHeap search_layer(const float* q, uint64_t q_sig, int ep, int ef, int layer, bool count, SearchTracker& tracker) const {
+    MaxHeap search_layer(const float* q, int ep, int ef, int layer, bool count, SearchTracker& tracker) const {
         auto& visited_gen = tracker.visited_gen;
         auto& current_gen = tracker.current_gen;
 
@@ -395,17 +329,10 @@ private:
         reset_visited();
         mark_visited(ep);
 
-        int cur_mode = mode_;
-        if (mode_ == 3) {
-            cur_mode = is_building_ ? 2 : 1; // LSH during build, SQ8 during query
-        } else if (mode_ == 4) {
-            cur_mode = is_building_ ? 2 : 0; // LSH during build, Float during query
-        }
-
         // Per-dim SQ8: shift the query once per search so the hot loop is a
         // single fmsub per element. thread_local → safe under the parallel build.
         const float* q_shifted = nullptr;
-        if (cur_mode == 5) {
+        if (mode_ == 2) {
             static thread_local std::vector<float> q_shift_buf;
             q_shift_buf.resize(dim_);
             for (int d = 0; d < dim_; ++d)
@@ -414,12 +341,10 @@ private:
         }
 
         float d_ep;
-        if (cur_mode == 1) {
+        if (mode_ == 1) {
             d_ep = compute_l2_distance_quantized(&quantized_data_[ep * dim_], q, dim_, scale_, offset_);
-        } else if (cur_mode == 5) {
+        } else if (mode_ == 2) {
             d_ep = compute_l2_distance_quantized_pd(&quantized_data_[ep * dim_], q_shifted, dim_, pd_scale_.data());
-        } else if (cur_mode == 2) {
-            d_ep = static_cast<float>(__builtin_popcountll(q_sig ^ signatures_[ep]));
         } else {
             d_ep = dist_to(ep, q);
         }
@@ -455,24 +380,20 @@ private:
 
                 if (idx + 2 < n_neighbors) {
                     int32_t prefetch_node = neighbors[idx + 2];
-                    if (cur_mode == 1 || cur_mode == 5) {
+                    if (mode_ != 0) {
                         __builtin_prefetch(&quantized_data_[prefetch_node * dim_], 0, 3);
                     } else {
                         __builtin_prefetch(&data_[prefetch_node * dim_], 0, 3);
                     }
                 }
 
-                float d_e = 0.0f;
-                if (cur_mode == 1) {
-                    float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
+                float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
+                float d_e;
+                if (mode_ == 1) {
                     d_e = compute_l2_distance_quantized(&quantized_data_[e * dim_], q, dim_, scale_, offset_, threshold);
-                } else if (cur_mode == 5) {
-                    float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
+                } else if (mode_ == 2) {
                     d_e = compute_l2_distance_quantized_pd(&quantized_data_[e * dim_], q_shifted, dim_, pd_scale_.data(), threshold);
-                } else if (cur_mode == 2) {
-                    d_e = static_cast<float>(__builtin_popcountll(q_sig ^ signatures_[e]));
                 } else {
-                    float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
                     d_e = dist_to(e, q, threshold);
                 }
 
@@ -504,7 +425,7 @@ private:
     //   candidates back-fill leftover slots (keepPrunedConnections).
     //
     // All heuristic distances use exact float vectors (data_ is always
-    // retained), so the rule stays valid in sq8/lsh build modes too.
+    // retained), so the rule stays valid in the quantized build modes too.
     // ------------------------------------------------------------------
     std::vector<int32_t> select_from_sorted(const std::vector<Pair>& cand, int M_max) const {
         std::vector<int32_t> selected;
@@ -537,26 +458,13 @@ private:
     }
 
     // Drain a search_layer result heap into candidates (nearest-first) and
-    // run neighbor selection on them.
-    std::vector<int32_t> select_neighbors(MaxHeap& W, int M_max, const float* base_q) {
+    // run neighbor selection on them. Heap distances are float or SQ8-approx
+    // L2 — both on the L2 scale the diversity rule expects.
+    std::vector<int32_t> select_neighbors(MaxHeap& W, int M_max) {
         std::vector<Pair> cand;
         cand.reserve(W.size());
         while (!W.empty()) { cand.push_back(W.top()); W.pop(); }
         std::reverse(cand.begin(), cand.end());   // nearest-first (build metric)
-
-        if (heuristic_) {
-            int cur_mode = mode_;
-            if (mode_ == 3 || mode_ == 4) cur_mode = 2;   // lsh-hybrid builds search on hamming
-            if (cur_mode == 2) {
-                // Hamming heap distances are not comparable with the float
-                // pair-distances used by the diversity rule: recompute in
-                // float and re-sort. (float and sq8 heap distances are
-                // already on the L2 scale — no recompute needed.)
-                for (auto& p : cand)
-                    p.first = compute_l2_distance(&data_[p.second * dim_], base_q, dim_);
-                std::sort(cand.begin(), cand.end());
-            }
-        }
         return select_from_sorted(cand, M_max);
     }
 
@@ -609,11 +517,10 @@ private:
         }
 
         const float* q = &data_[idx * dim_];
-        uint64_t q_sig = (mode_ == 2 || mode_ == 3 || mode_ == 4) ? signatures_[idx] : 0;
 
         // ---- Phase 1: greedy descent from max_l → l+1 ----
         for (int lc = max_l; lc > l; --lc) {
-            MaxHeap W = search_layer(q, q_sig, ep, 1, lc, false, tracker);
+            MaxHeap W = search_layer(q, ep, 1, lc, false, tracker);
             ep = nearest_in(W);
         }
 
@@ -621,10 +528,10 @@ private:
         for (int lc = std::min(l, max_l); lc >= 0; --lc) {
             int M_max = (lc == 0) ? Mmax0_ : M_;
 
-            MaxHeap W = search_layer(q, q_sig, ep, ef_construction_, lc, false, tracker);
+            MaxHeap W = search_layer(q, ep, ef_construction_, lc, false, tracker);
             ep = nearest_in(W);   // best found so far → entry for next layer
 
-            auto neighbors = select_neighbors(W, M_max, q);
+            auto neighbors = select_neighbors(W, M_max);
             graph_[idx][lc] = neighbors;
 
             for (int32_t nb : neighbors) {
