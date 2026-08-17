@@ -31,6 +31,15 @@ using MaxHeap = std::priority_queue<Pair>;
 // Min-heap: top = nearest
 using MinHeap = std::priority_queue<Pair, std::vector<Pair>, std::greater<Pair>>;
 
+// Once a beam search finishes, the heap ORDER of its result window is no
+// longer needed (callers scan or re-sort), so the underlying vector is moved
+// out instead of popped element by element (each pop re-heapifies at
+// O(log n)). Pointer-to-member is the legal way to reach the protected
+// container of std::priority_queue.
+struct HeapAccess : MaxHeap {
+    static std::vector<Pair> take(MaxHeap&& w) { return std::move(w.*&HeapAccess::c); }
+};
+
 // Tracker for visited nodes during search to avoid thread_local library issues
 struct SearchTracker {
     std::vector<uint32_t> visited_gen;
@@ -184,50 +193,36 @@ public:
         const float* q = static_cast<const float*>(qbuf.ptr);
         ef = std::max(ef, k);
 
-        int ep;
-        int max_l;
-        {
-            std::lock_guard<std::mutex> lock(global_lock_);
-            ep = entry_point_;
-            max_l = max_level_;
-        }
+        int ep = entry_point_;
+        int max_l=max_level_;
 
         SearchTracker tracker;
         tracker.visited_gen.assign(npts_, 0);
 
-        // Drain max-heap → nearest-first
+        // Layer-0 candidate window, exact-sorted nearest-first
         std::vector<Pair> results;
 
         {
             py::gil_scoped_release release;
-            // Greedy descent: layers max_level → 1  (ef=1 → W holds exactly
-            // the single nearest node found at this layer)
+            // Greedy descent: layers max_level → 1  (ef=1 → the window holds
+            // exactly the single nearest node found at this layer)
             for (int l = max_l; l > 0; --l) {
-                MaxHeap W = search_layer(q, ep, 1, l, /*count=*/true, tracker);
-                ep = W.top().second;
+                auto W = search_layer(q, ep, 1, l, /*count=*/true, tracker);
+                ep = W.front().second;
             }
 
-            // Full beam search at layer 0
-            MaxHeap W = search_layer(q, ep, ef, 0, /*count=*/true, tracker);
-
-            results.reserve(W.size());
+            // Full beam search at layer 0 (unordered window, size <= ef)
+            std::vector<Pair> W = search_layer(q, ep, ef, 0, /*count=*/true, tracker);
 
             if (mode_ == Mode::Float) {
-                // Heap already has exact L2 distances
-                while (!W.empty()) {
-                    results.push_back(W.top());
-                    W.pop();
-                }
-                std::reverse(results.begin(), results.end());
+                results = std::move(W);   // distances already exact
             } else {
                 // Quantized modes: rerank the whole candidate window with exact floats
-                while (!W.empty()) {
-                    int node = W.top().second;
-                    results.push_back({dist_to(node, q), node});
-                    W.pop();
-                }
-                std::sort(results.begin(), results.end());
+                results.reserve(W.size());
+                for (const auto& p : W)
+                    results.push_back({dist_to(p.second, q), p.second});
             }
+            std::sort(results.begin(), results.end());
         }
 
         int out_k = std::min(k, (int)results.size());
@@ -293,9 +288,10 @@ private:
 
     // ------------------------------------------------------------------
     // Core: beam search at one layer
-    // Returns max-heap of (dist, idx) of size <= ef
+    // Returns the candidate window as an UNORDERED vector of (dist, idx),
+    // size in [1, ef] — it always contains at least the entry point.
     // ------------------------------------------------------------------
-    MaxHeap search_layer(const float* q, int ep, int ef, int layer, bool count, SearchTracker& tracker) const {
+    std::vector<Pair> search_layer(const float* q, int ep, int ef, int layer, bool count, SearchTracker& tracker) const {
         auto& visited_gen = tracker.visited_gen;
         auto& current_gen = tracker.current_gen;
 
@@ -389,7 +385,7 @@ private:
                 }
             }
         }
-        return W;
+        return HeapAccess::take(std::move(W));
     }
 
     // ------------------------------------------------------------------
@@ -440,14 +436,11 @@ private:
         return selected;
     }
 
-    // Drain a search_layer result heap into candidates (nearest-first) and
-    // run neighbor selection on them. Heap distances are float or SQ8-approx
-    // L2 — both on the L2 scale the diversity rule expects.
-    std::vector<int32_t> select_neighbors(MaxHeap& W, int M_max) {
-        std::vector<Pair> cand;
-        cand.reserve(W.size());
-        while (!W.empty()) { cand.push_back(W.top()); W.pop(); }
-        std::reverse(cand.begin(), cand.end());   // nearest-first (build metric)
+    // Sort a search_layer candidate window nearest-first and run neighbor
+    // selection on it. Window distances are float or SQ8-approx L2 — both on
+    // the L2 scale the diversity rule expects.
+    std::vector<int32_t> select_neighbors(std::vector<Pair> cand, int M_max) {
+        std::sort(cand.begin(), cand.end());   // nearest-first (build metric)
         return select_from_sorted(cand, M_max);
     }
 
@@ -492,20 +485,20 @@ private:
 
         // ---- Phase 1: greedy descent from max_l → l+1 (ef=1 → single result) ----
         for (int lc = max_l; lc > l; --lc) {
-            MaxHeap W = search_layer(q, ep, 1, lc, false, tracker);
-            ep = W.top().second;
+            auto W = search_layer(q, ep, 1, lc, false, tracker);
+            ep = W.front().second;
         }
 
         // ---- Phase 2: search & link from min(l, max_l) → 0 ----
         for (int lc = std::min(l, max_l); lc >= 0; --lc) {
             int M_max = (lc == 0) ? Mmax0_ : M_;
 
-            MaxHeap W = search_layer(q, ep, ef_construction_, lc, false, tracker);
+            auto W = search_layer(q, ep, ef_construction_, lc, false, tracker);
 
-            // select_neighbors drains W nearest-first, and both selection
-            // branches always keep the nearest candidate at position 0 —
-            // so neighbors[0] is the best node found at this layer.
-            auto neighbors = select_neighbors(W, M_max);
+            // select_neighbors sorts the window nearest-first, and both
+            // selection branches always keep the nearest candidate at
+            // position 0 — so neighbors[0] is the best node of this layer.
+            auto neighbors = select_neighbors(std::move(W), M_max);
             ep = neighbors[0];   // entry point for the next layer down
             {
                 // idx is already discoverable at higher layers, so another
