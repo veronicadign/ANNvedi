@@ -13,6 +13,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     celeba-resnet-public: &id001
@@ -22,6 +23,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     celeba-resnet-private: *id001
@@ -32,6 +34,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     yahoo-minilm-private: *id002
@@ -42,6 +45,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     landmark-nomic-private: *id003
@@ -52,6 +56,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 170
     imagenet-clip-private: *id004
@@ -62,6 +67,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     agnews-mxbai-private: *id005
@@ -72,6 +78,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 100
     simplewiki-openai-private: *id006
@@ -82,6 +89,7 @@ scenarios:
         ef_construction: 100
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 100
     gooaq-distilroberta-private: *id007
@@ -93,6 +101,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     celeba-resnet-public: &id008
@@ -102,6 +111,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     celeba-resnet-private: *id008
@@ -112,6 +122,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 100
     yahoo-minilm-private: *id009
@@ -122,6 +133,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     landmark-nomic-private: *id010
@@ -132,6 +144,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     imagenet-clip-private: *id011
@@ -142,6 +155,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     agnews-mxbai-private: *id012
@@ -152,6 +166,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     simplewiki-openai-private: *id013
@@ -162,6 +177,7 @@ scenarios:
         ef_construction: 64
         mode: sq8pd
         heuristic: true
+        reorder: true
       query_params:
         ef: 100
     gooaq-distilroberta-private: *id014
@@ -173,6 +189,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 300
     celeba-resnet-public: &id015
@@ -182,6 +199,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 300
     celeba-resnet-private: *id015
@@ -192,6 +210,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 300
     yahoo-minilm-private: *id016
@@ -202,6 +221,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 120
     landmark-nomic-private: *id017
@@ -212,6 +232,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 170
     imagenet-clip-private: *id018
@@ -222,6 +243,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 250
     agnews-mxbai-private: *id019
@@ -232,6 +254,7 @@ scenarios:
         ef_construction: 64
         mode: sq8
         heuristic: true
+        reorder: true
       query_params:
         ef: 250
     simplewiki-openai-private: *id020
@@ -242,6 +265,7 @@ scenarios:
         ef_construction: 64
         mode: sq8pd
         heuristic: true
+        reorder: true
       query_params:
         ef: 200
     gooaq-distilroberta-private: *id021

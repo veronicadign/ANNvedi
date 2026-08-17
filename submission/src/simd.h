@@ -288,3 +288,44 @@ inline float compute_l2_distance_quantized_pd(const uint8_t* a, const float* q_s
     return sum;
 #endif
 }
+
+// Per-dimension SQ4 L2 distance: two dims per byte, 16 levels per dim. Byte j
+// of each 16-byte block holds dim (32*blk + j) in the LOW nibble and dim
+// (32*blk + 16 + j) in the HIGH nibble, so one 128-bit load unpacks into two
+// runs of 16 consecutive dims. dim_pad is padded to a multiple of 32; scale
+// and q_shifted are zero-padded there, so the tail contributes exactly 0.
+inline float compute_l2_distance_quantized_pd4(const uint8_t* a, const float* q_shifted, size_t dim_pad,
+                                               const float* scale,
+                                               float threshold = std::numeric_limits<float>::max()) {
+#if defined(HAS_AVX512)
+    __m512 sum_vec = _mm512_setzero_ps();
+    const __m128i nib_mask = _mm_set1_epi8(0x0F);
+    for (size_t d = 0; d < dim_pad; d += 32) {
+        __m128i v  = _mm_loadu_si128((const __m128i*)(a + d / 2));
+        __m128i lo = _mm_and_si128(v, nib_mask);
+        __m128i hi = _mm_and_si128(_mm_srli_epi16(v, 4), nib_mask);
+        __m512 flo = _mm512_cvtepi32_ps(_mm512_cvtepu8_epi32(lo));
+        __m512 fhi = _mm512_cvtepi32_ps(_mm512_cvtepu8_epi32(hi));
+        __m512 dlo = _mm512_fmsub_ps(flo, _mm512_loadu_ps(scale + d),      _mm512_loadu_ps(q_shifted + d));
+        __m512 dhi = _mm512_fmsub_ps(fhi, _mm512_loadu_ps(scale + d + 16), _mm512_loadu_ps(q_shifted + d + 16));
+        sum_vec = _mm512_fmadd_ps(dlo, dlo, sum_vec);
+        sum_vec = _mm512_fmadd_ps(dhi, dhi, sum_vec);
+        if (d % 96 == 64) {
+            float s = reduce_add_ps_512(sum_vec);
+            if (s >= threshold) return s;
+        }
+    }
+    return reduce_add_ps_512(sum_vec);
+#else
+    float sum = 0.0f;
+    for (size_t d = 0; d < dim_pad; ++d) {
+        size_t blk = d / 32, r = d % 32;
+        uint8_t byte = a[blk * 16 + (r < 16 ? r : r - 16)];
+        int nib = (r < 16) ? (byte & 0x0F) : (byte >> 4);
+        float diff = nib * scale[d] - q_shifted[d];
+        sum += diff * diff;
+        if (d % 16 == 15 && sum >= threshold) return sum;
+    }
+    return sum;
+#endif
+}

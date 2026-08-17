@@ -156,6 +156,28 @@ is also *built* with these distances, and graph-quality shifts dominate:
 Sweep it alongside sq8 in future tuner runs (add to the focused grid when
 retuning on the competition machine).
 
+### Locality reorder & SQ4 (measured 2026-08-12, full yahoo, interleaved A/B)
+
+- **BFS locality reorder — ADOPTED** (`reorder: true` in every hnsw block;
+  implemented in submission/src/hnsw.cpp): after the build, nodes are
+  renumbered in BFS order over layer 0 and all payloads permuted, so the
+  query beam's hops land on nearby cache lines/pages instead of uniformly
+  random ones. **+12.7% qps** (0.523 → 0.457ms, faster in every interleaved
+  round), recall identical by construction, build-time cost ≈ 0 (244s vs
+  245s once ordering bias was controlled). Query() maps results back to
+  original ids. NOTE: not yet ported to the dev src/hnsw.cpp — dev-side
+  runs slightly underestimate the submission until it is.
+- **SQ4 per-dim mode (`sq4pd`) — implemented, NOT enabled**: half the cache
+  lines per eval and ~18% cheaper per-eval as predicted, but the coarser
+  beam needs ~1.5x the ef to clear the bar: at the 0.955 operating point it
+  measures 0.584ms vs sq8's 0.474ms. Kept as a tuner lever; the promising
+  target is simplewiki (3072d = 48 lines/eval, bandwidth-dominated), worth
+  sweeping on the competition machine.
+- Context for both: perf profiling showed the query is memory-latency-bound
+  (IPC 0.72, 70% LLC miss rate, ~6,900 DRAM misses/query; branch mispredicts
+  only ~4% of cycles; AVX-512 16-wide confirmed; software prefetch already
+  saturates line-fill buffers at +2 lookahead).
+
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
   config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.

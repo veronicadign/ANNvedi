@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <limits>
 #include <string>
+#include <cstring>
 #include <thread>
 #include <mutex>
 #include <atomic>
@@ -21,6 +22,7 @@ enum class Mode {
     Float,  // exact float L2
     SQ8,    // 8-bit codes, one global [min,max] scale
     SQ8PD,  // 8-bit codes, per-dimension scales (ported from the IVF-LSH fork)
+    SQ4PD,  // 4-bit codes, per-dimension scales — half the cache lines per eval
 };
 
 // (distance, node_index)
@@ -56,7 +58,7 @@ public:
     // Build the index
     // ------------------------------------------------------------------
     void fit(py::array_t<float> data, int M, int ef_construction, const std::string& mode = "float",
-             bool heuristic = false) {
+             bool heuristic = false, bool reorder = false) {
         py::buffer_info buf = data.request();
         if (buf.ndim != 2 || buf.shape[0] == 0)
             throw std::runtime_error("Input must be a non-empty 2D array");
@@ -73,15 +75,18 @@ public:
             mode_ = Mode::SQ8;
         } else if (mode == "sq8pd") {
             mode_ = Mode::SQ8PD;
+        } else if (mode == "sq4pd") {
+            mode_ = Mode::SQ4PD;
         } else if (mode == "float") {
             mode_ = Mode::Float;
         } else {
             // the experimental lsh/hybrid modes live only in the dev repo
-            throw std::runtime_error("unknown mode '" + mode + "' (use float, sq8 or sq8pd)");
+            throw std::runtime_error("unknown mode '" + mode + "' (use float, sq8, sq8pd or sq4pd)");
         }
 
         float* ptr = static_cast<float*>(buf.ptr);
         data_.assign(ptr, ptr + npts_ * dim_);
+        code_stride_ = dim_;   // bytes per vector in quantized_data_ (sq8/sq8pd)
 
         // Global-scale SQ8 quantization
         if (mode_ == Mode::SQ8) {
@@ -139,6 +144,44 @@ public:
             }
         }
 
+        // Per-dimension SQ4: 16 levels per dim, two dims per byte (packed to
+        // match the kernel's nibble layout — see compute_l2_distance_quantized_pd4).
+        // Dims are padded to a multiple of 32 with scale 0 so the tail is inert.
+        if (mode_ == Mode::SQ4PD) {
+            dim_pad_ = (dim_ + 31) / 32 * 32;
+            code_stride_ = dim_pad_ / 2;
+            pd_scale_.assign(dim_pad_, 0.0f);
+            pd_offset_.assign(dim_pad_, 0.0f);
+            for (int d = 0; d < dim_; ++d) {
+                float min_val = std::numeric_limits<float>::max();
+                float max_val = std::numeric_limits<float>::lowest();
+                for (int i = 0; i < npts_; ++i) {
+                    float val = data_[(size_t)i * dim_ + d];
+                    if (val < min_val) min_val = val;
+                    if (val > max_val) max_val = val;
+                }
+                if (max_val - min_val > 1e-8f) {
+                    pd_scale_[d] = (max_val - min_val) / 15.0f;
+                    pd_offset_[d] = min_val;
+                } else {
+                    pd_scale_[d] = 1.0f;
+                    pd_offset_[d] = min_val;
+                }
+            }
+            quantized_data_.assign((size_t)npts_ * code_stride_, 0);
+            for (int i = 0; i < npts_; ++i) {
+                uint8_t* codes = &quantized_data_[(size_t)i * code_stride_];
+                for (int d = 0; d < dim_; ++d) {
+                    float val = data_[(size_t)i * dim_ + d];
+                    int nib = (int)std::round((val - pd_offset_[d]) / pd_scale_[d]);
+                    nib = std::max(0, std::min(15, nib));
+                    int blk = d / 32, r = d % 32;
+                    uint8_t& byte = codes[blk * 16 + (r < 16 ? r : r - 16)];
+                    byte = (r < 16) ? (uint8_t)(byte | nib) : (uint8_t)(byte | (nib << 4));
+                }
+            }
+        }
+
         graph_.resize(npts_);
         n_distances_.store(0);
 
@@ -180,6 +223,9 @@ public:
         }
 
         is_building_ = false;
+
+        if (reorder)
+            reorder_for_locality();
     }
 
     // ------------------------------------------------------------------
@@ -229,7 +275,8 @@ public:
         py::array_t<int64_t> out(out_k);
         int64_t* out_ptr = static_cast<int64_t*>(out.request().ptr);
         for (int i = 0; i < out_k; ++i)
-            out_ptr[i] = results[i].second;
+            out_ptr[i] = new_to_orig_.empty() ? results[i].second
+                                              : new_to_orig_[results[i].second];
 
         return out;
     }
@@ -268,9 +315,72 @@ private:
     std::vector<uint8_t> quantized_data_;
     float scale_ = 1.0f;
     float offset_ = 0.0f;
-    // per-dimension SQ8 (mode 2)
+    // per-dimension SQ8 / SQ4 (scales sized dim_ for sq8pd, dim_pad_ for sq4pd)
     std::vector<float> pd_scale_;
     std::vector<float> pd_offset_;
+    int dim_pad_ = 0;          // dims padded to a multiple of 32 (sq4pd)
+    size_t code_stride_ = 0;   // bytes per vector in quantized_data_
+
+    // Locality reorder (fit(..., reorder=true)): new id -> original id.
+    // Empty = identity (no reorder requested).
+    std::vector<int32_t> new_to_orig_;
+
+    // ------------------------------------------------------------------
+    // Renumber nodes in BFS order over layer 0 from the entry point, and
+    // permute every payload to match. Graph-neighbors become memory-
+    // neighbors, so the query beam's hops land on nearby cache lines and
+    // pages instead of uniformly random ones (the profiled bottleneck:
+    // ~70% LLC miss rate on neighbor fetches). The graph itself is
+    // unchanged — only the numbering — so recall is identical by
+    // construction; query() maps results back to original ids.
+    // ------------------------------------------------------------------
+    void reorder_for_locality() {
+        const int n = npts_;
+        std::vector<int32_t> order;          // BFS visit sequence: new id -> old id
+        order.reserve(n);
+        std::vector<uint8_t> seen(n, 0);
+        size_t head = 0;
+        order.push_back(entry_point_);
+        seen[entry_point_] = 1;
+        while (head < order.size()) {
+            int c = order[head++];
+            for (int32_t nb : graph_[c][0])
+                if (!seen[nb]) { seen[nb] = 1; order.push_back(nb); }
+        }
+        for (int i = 0; i < n; ++i)          // nodes unreachable at layer 0
+            if (!seen[i]) order.push_back(i);
+
+        std::vector<int32_t> new_id(n);      // old id -> new id
+        for (int i = 0; i < n; ++i) new_id[order[i]] = i;
+
+        // Permute payloads one at a time (bounds the transient memory)
+        {
+            std::vector<float> tmp((size_t)n * dim_);
+            for (int i = 0; i < n; ++i)
+                std::memcpy(&tmp[(size_t)i * dim_], &data_[(size_t)order[i] * dim_],
+                            (size_t)dim_ * sizeof(float));
+            data_.swap(tmp);
+        }
+        if (!quantized_data_.empty()) {
+            std::vector<uint8_t> tmp((size_t)n * code_stride_);
+            for (int i = 0; i < n; ++i)
+                std::memcpy(&tmp[(size_t)i * code_stride_],
+                            &quantized_data_[(size_t)order[i] * code_stride_], code_stride_);
+            quantized_data_.swap(tmp);
+        }
+        {
+            std::vector<std::vector<std::vector<int32_t>>> tmp(n);
+            for (int i = 0; i < n; ++i) {
+                tmp[i] = std::move(graph_[order[i]]);
+                for (auto& layer : tmp[i])
+                    for (auto& e : layer)
+                        e = new_id[e];
+            }
+            graph_.swap(tmp);
+        }
+        entry_point_ = new_id[entry_point_];
+        new_to_orig_ = std::move(order);
+    }
 
     // ------------------------------------------------------------------
     // Helpers
@@ -308,14 +418,17 @@ private:
         reset_visited();
         mark_visited(ep);
 
-        // Per-dim SQ8: shift the query once per search so the hot loop is a
-        // single fmsub per element. thread_local → safe under the parallel build.
+        // Per-dim quantized modes: shift the query once per search so the hot
+        // loop is a single fmsub per element. thread_local → safe under the
+        // parallel build. For SQ4 the buffer is padded to dim_pad_ with zeros
+        // (matching the zero-padded scales, so padded lanes contribute 0).
         const float* q_shifted = nullptr;
-        if (mode_ == Mode::SQ8PD) {
+        if (mode_ == Mode::SQ8PD || mode_ == Mode::SQ4PD) {
             static thread_local std::vector<float> q_shift_buf;
-            q_shift_buf.resize(dim_);
-            for (int d = 0; d < dim_; ++d)
-                q_shift_buf[d] = q[d] - pd_offset_[d];
+            const int n = (int)pd_offset_.size();
+            q_shift_buf.resize(n);
+            for (int d = 0; d < n; ++d)
+                q_shift_buf[d] = (d < dim_) ? q[d] - pd_offset_[d] : 0.0f;
             q_shifted = q_shift_buf.data();
         }
 
@@ -324,6 +437,8 @@ private:
             d_ep = compute_l2_distance_quantized(&quantized_data_[ep * dim_], q, dim_, scale_, offset_);
         } else if (mode_ == Mode::SQ8PD) {
             d_ep = compute_l2_distance_quantized_pd(&quantized_data_[ep * dim_], q_shifted, dim_, pd_scale_.data());
+        } else if (mode_ == Mode::SQ4PD) {
+            d_ep = compute_l2_distance_quantized_pd4(&quantized_data_[(size_t)ep * code_stride_], q_shifted, dim_pad_, pd_scale_.data());
         } else {
             d_ep = dist_to(ep, q);
         }
@@ -360,7 +475,7 @@ private:
                 if (idx + 2 < n_neighbors) {
                     int32_t prefetch_node = neighbors[idx + 2];
                     if (mode_ != Mode::Float) {
-                        __builtin_prefetch(&quantized_data_[prefetch_node * dim_], 0, 3);
+                        __builtin_prefetch(&quantized_data_[(size_t)prefetch_node * code_stride_], 0, 3);
                     } else {
                         __builtin_prefetch(&data_[prefetch_node * dim_], 0, 3);
                     }
@@ -372,6 +487,8 @@ private:
                     d_e = compute_l2_distance_quantized(&quantized_data_[e * dim_], q, dim_, scale_, offset_, threshold);
                 } else if (mode_ == Mode::SQ8PD) {
                     d_e = compute_l2_distance_quantized_pd(&quantized_data_[e * dim_], q_shifted, dim_, pd_scale_.data(), threshold);
+                } else if (mode_ == Mode::SQ4PD) {
+                    d_e = compute_l2_distance_quantized_pd4(&quantized_data_[(size_t)e * code_stride_], q_shifted, dim_pad_, pd_scale_.data(), threshold);
                 } else {
                     d_e = dist_to(e, q, threshold);
                 }
@@ -534,7 +651,7 @@ PYBIND11_MODULE(hnsw_cpp, m) {
         .def(py::init<>())
         .def("fit",   &HNSWIndex::fit,
              py::arg("data"), py::arg("M") = 16, py::arg("ef_construction") = 100, py::arg("mode") = "float",
-             py::arg("heuristic") = false)
+             py::arg("heuristic") = false, py::arg("reorder") = false)
         .def("query", &HNSWIndex::query,
              py::arg("query"), py::arg("k"), py::arg("ef") = 100)
         .def("total_distances_count", &HNSWIndex::total_distances_count);

@@ -29,6 +29,7 @@ class Algorithm:
             int(index_params.get('ef_construction', 100)),
             str(index_params.get('mode', 'sq8')),
             bool(index_params.get('heuristic', True)),
+            bool(index_params.get('reorder', True)),
         )
 
     def query(self, query: np.ndarray, k: int, **query_params) -> np.ndarray:
