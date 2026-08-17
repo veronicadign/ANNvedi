@@ -200,10 +200,11 @@ public:
 
         {
             py::gil_scoped_release release;
-            // Greedy descent: layers max_level → 1  (ef=1)
+            // Greedy descent: layers max_level → 1  (ef=1 → W holds exactly
+            // the single nearest node found at this layer)
             for (int l = max_l; l > 0; --l) {
                 MaxHeap W = search_layer(q, ep, 1, l, /*count=*/true, tracker);
-                ep = nearest_in(W);
+                ep = W.top().second;
             }
 
             // Full beam search at layer 0
@@ -288,14 +289,6 @@ private:
         std::uniform_real_distribution<double> uniform(0.0, 1.0);
         double r = -std::log(uniform(rng) + 1e-10) * ml_;
         return std::min((int)r, 32);   // cap to avoid unbounded levels
-    }
-
-    // Get nearest element from a max-heap (drain & rebuild — used sparingly)
-    static int nearest_in(MaxHeap& W) {
-        std::vector<Pair> tmp;
-        while (!W.empty()) { tmp.push_back(W.top()); W.pop(); }
-        for (auto& p : tmp) W.push(p);
-        return tmp.back().second;   // last = smallest dist after draining max-heap
     }
 
     // ------------------------------------------------------------------
@@ -497,10 +490,10 @@ private:
 
         const float* q = &data_[idx * dim_];
 
-        // ---- Phase 1: greedy descent from max_l → l+1 ----
+        // ---- Phase 1: greedy descent from max_l → l+1 (ef=1 → single result) ----
         for (int lc = max_l; lc > l; --lc) {
             MaxHeap W = search_layer(q, ep, 1, lc, false, tracker);
-            ep = nearest_in(W);
+            ep = W.top().second;
         }
 
         // ---- Phase 2: search & link from min(l, max_l) → 0 ----
@@ -508,9 +501,12 @@ private:
             int M_max = (lc == 0) ? Mmax0_ : M_;
 
             MaxHeap W = search_layer(q, ep, ef_construction_, lc, false, tracker);
-            ep = nearest_in(W);   // best found so far → entry for next layer
 
+            // select_neighbors drains W nearest-first, and both selection
+            // branches always keep the nearest candidate at position 0 —
+            // so neighbors[0] is the best node found at this layer.
             auto neighbors = select_neighbors(W, M_max);
+            ep = neighbors[0];   // entry point for the next layer down
             {
                 // idx is already discoverable at higher layers, so another
                 // thread can be reading graph_[idx][lc] (it copies under this
