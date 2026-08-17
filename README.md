@@ -32,8 +32,10 @@ algorithm — that is exactly what the root `algorithm.py` facade does.
 ## Layout
 
 ```
-algorithm.py, scenarios.yaml   The root submission: multi-backend facade (linear/lsh/hnsw/multiprobe)
-Dockerfile, .dockerignore      Root submission image (context trimmed by .dockerignore)
+submission/                    THE final submission bundle: hnsw-only (src/hnsw.cpp + simd.h),
+                               tuned scenarios.yaml, Dockerfile, README — build THIS for the race
+algorithm.py, scenarios.yaml   Dev facade: multi-backend (linear/lsh/hnsw/ivf_lsh/multiprobe)
+Dockerfile, .dockerignore      Dev submission image (superseded by submission/ for the race)
 setup.py, src/                 Canonical C++: hnsw, lsh_index_optimized, lsh_index_simple,
                                linear_index, multiprobe_lsh (+ simd.h, thread_pool.h)
 linear_ann/, lsh_ann/          Thin Python wrappers used by the facade and experiments
