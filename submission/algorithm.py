@@ -33,8 +33,7 @@ class Algorithm:
 
     def query(self, query: np.ndarray, k: int, **query_params) -> np.ndarray:
         ef = int(query_params.get('ef', 120))
-        refine_r = int(query_params.get('refine_r', -1))
-        return self._index.query(np.asarray(query, dtype=np.float32), k, ef, refine_r)
+        return self._index.query(np.asarray(query, dtype=np.float32), k, ef)
 
     def get_n_distances(self) -> int:
         return self._index.total_distances_count() if self._index is not None else 0

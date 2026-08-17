@@ -14,7 +14,6 @@
 #include <limits>
 #include <cstdint>
 #include <cstring>
-#include <algorithm>
 
 #if defined(HAS_AVX512)
 // Custom robust reduction helper to avoid compiler horizontal reduction optimization bugs under -ffast-math

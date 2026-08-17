@@ -7,15 +7,21 @@
 #include <algorithm>
 #include <stdexcept>
 #include <limits>
-#include <numeric>
 #include <string>
 #include <thread>
 #include <mutex>
 #include <atomic>
-#include <memory>
 #include "simd.h"
 
 namespace py = pybind11;
+
+// Distance representation used by build and search. Exhaustive: fit() rejects
+// any other mode string, so no code path ever sees an out-of-enum value.
+enum class Mode {
+    Float,  // exact float L2
+    SQ8,    // 8-bit codes, one global [min,max] scale
+    SQ8PD,  // 8-bit codes, per-dimension scales (ported from the IVF-LSH fork)
+};
 
 // (distance, node_index)
 using Pair = std::pair<float, int32_t>;
@@ -55,11 +61,11 @@ public:
         heuristic_       = heuristic;
 
         if (mode == "sq8") {
-            mode_ = 1;
+            mode_ = Mode::SQ8;
         } else if (mode == "sq8pd") {
-            mode_ = 2;
+            mode_ = Mode::SQ8PD;
         } else if (mode == "float") {
-            mode_ = 0;
+            mode_ = Mode::Float;
         } else {
             // the experimental lsh/hybrid modes live only in the dev repo
             throw std::runtime_error("unknown mode '" + mode + "' (use float, sq8 or sq8pd)");
@@ -69,7 +75,7 @@ public:
         data_.assign(ptr, ptr + npts_ * dim_);
 
         // Global-scale SQ8 quantization
-        if (mode_ == 1) {
+        if (mode_ == Mode::SQ8) {
             float min_val = std::numeric_limits<float>::max();
             float max_val = std::numeric_limits<float>::lowest();
             for (float val : data_) {
@@ -95,7 +101,7 @@ public:
         // Per-dimension SQ8 (mode "sq8pd", ported from the IVF-LSH fork): each
         // dimension gets its own [min,max] range, so quantization error follows
         // the data's per-axis spread instead of the single global extreme.
-        if (mode_ == 2) {
+        if (mode_ == Mode::SQ8PD) {
             pd_scale_.resize(dim_);
             pd_offset_.resize(dim_);
             for (int d = 0; d < dim_; ++d) {
@@ -124,9 +130,7 @@ public:
             }
         }
 
-        
         graph_.resize(npts_);
-        level_.resize(npts_, 0);
 
         entry_point_ = -1;
         max_level_   = -1;
@@ -137,10 +141,10 @@ public:
         // Insert first node sequentially to establish the entry point
         if (npts_ > 0) {
             std::mt19937 rng(42);
-            level_[0] = random_level(rng);
-            graph_[0].assign(level_[0] + 1, {});
+            int l0 = random_level(rng);
+            graph_[0].assign(l0 + 1, {});
             entry_point_ = 0;
-            max_level_   = level_[0];
+            max_level_   = l0;
         }
 
         // Spawn parallel threads for inserting remaining nodes
@@ -174,7 +178,7 @@ public:
     // ------------------------------------------------------------------
     // Answer one k-NN query
     // ------------------------------------------------------------------
-    py::array_t<int64_t> query(py::array_t<float> query_arr, int k, int ef, int refine_r = -1) {
+    py::array_t<int64_t> query(py::array_t<float> query_arr, int k, int ef) {
         py::buffer_info qbuf = query_arr.request();
         if (qbuf.ndim != 1 || (int)qbuf.shape[0] != dim_)
             throw std::runtime_error("Query dimension mismatch");
@@ -209,23 +213,18 @@ public:
 
             results.reserve(W.size());
 
-            if (mode_ == 0) {
-                // Float mode: Heap already has exact L2 distances
+            if (mode_ == Mode::Float) {
+                // Heap already has exact L2 distances
                 while (!W.empty()) {
                     results.push_back(W.top());
                     W.pop();
                 }
                 std::reverse(results.begin(), results.end());
             } else {
-                // Quantized modes: rerank the candidate list using exact floats
-                int actual_refine_r = (refine_r > 0) ? std::min(refine_r, (int)W.size()) : (int)W.size();
-                while ((int)W.size() > actual_refine_r) {
-                    W.pop();
-                }
+                // Quantized modes: rerank the whole candidate window with exact floats
                 while (!W.empty()) {
                     int node = W.top().second;
-                    float d_exact = dist_to_float(node, q);
-                    results.push_back({d_exact, node});
+                    results.push_back({dist_to(node, q), node});
                     W.pop();
                 }
                 std::sort(results.begin(), results.end());
@@ -242,7 +241,6 @@ public:
     }
 
     int64_t total_distances_count() const { return n_distances_.load(); }
-    void    reset_distances_count()       { n_distances_.store(0); }
 
 private:
     // ------------------------------------------------------------------
@@ -262,14 +260,13 @@ private:
     static constexpr int LOCK_POOL_SIZE = 4096;
     mutable std::mutex node_locks_[LOCK_POOL_SIZE];
 
-    int mode_ = 0; // 0 = float, 1 = SQ8 (global scale), 2 = per-dimension SQ8
+    Mode mode_ = Mode::Float;
     bool is_building_ = false;
-    bool heuristic_ = false;  // diversity-based neighbor selection; default OFF —
-                              // at the competition's k=100 recall saturates and the
-                              // extra edges only cost QPS/build time (docs/TUNING.md)
+    bool heuristic_ = false;  // diversity-based neighbor selection (Alg. 4);
+                              // every shipped scenario enables it — at full scale
+                              // it is worth ~+0.05 recall at equal ef
 
     std::vector<float>   data_;
-    std::vector<int>     level_;
     // graph_[node][layer] = list of neighbor indices
     std::vector<std::vector<std::vector<int32_t>>> graph_;
 
@@ -287,11 +284,6 @@ private:
     inline float dist_to(int node, const float* q, float threshold = std::numeric_limits<float>::max()) const {
         const float* p = &data_[node * dim_];
         return compute_l2_distance(p, q, dim_, threshold);
-    }
-
-    inline float dist_to_float(int node, const float* q) const {
-        const float* p = &data_[node * dim_];
-        return compute_l2_distance(p, q, dim_);
     }
 
     int random_level(std::mt19937& rng) {
@@ -332,7 +324,7 @@ private:
         // Per-dim SQ8: shift the query once per search so the hot loop is a
         // single fmsub per element. thread_local → safe under the parallel build.
         const float* q_shifted = nullptr;
-        if (mode_ == 2) {
+        if (mode_ == Mode::SQ8PD) {
             static thread_local std::vector<float> q_shift_buf;
             q_shift_buf.resize(dim_);
             for (int d = 0; d < dim_; ++d)
@@ -341,9 +333,9 @@ private:
         }
 
         float d_ep;
-        if (mode_ == 1) {
+        if (mode_ == Mode::SQ8) {
             d_ep = compute_l2_distance_quantized(&quantized_data_[ep * dim_], q, dim_, scale_, offset_);
-        } else if (mode_ == 2) {
+        } else if (mode_ == Mode::SQ8PD) {
             d_ep = compute_l2_distance_quantized_pd(&quantized_data_[ep * dim_], q_shifted, dim_, pd_scale_.data());
         } else {
             d_ep = dist_to(ep, q);
@@ -380,7 +372,7 @@ private:
 
                 if (idx + 2 < n_neighbors) {
                     int32_t prefetch_node = neighbors[idx + 2];
-                    if (mode_ != 0) {
+                    if (mode_ != Mode::Float) {
                         __builtin_prefetch(&quantized_data_[prefetch_node * dim_], 0, 3);
                     } else {
                         __builtin_prefetch(&data_[prefetch_node * dim_], 0, 3);
@@ -389,9 +381,9 @@ private:
 
                 float threshold = ((int)W.size() >= ef) ? W.top().first : std::numeric_limits<float>::max();
                 float d_e;
-                if (mode_ == 1) {
+                if (mode_ == Mode::SQ8) {
                     d_e = compute_l2_distance_quantized(&quantized_data_[e * dim_], q, dim_, scale_, offset_, threshold);
-                } else if (mode_ == 2) {
+                } else if (mode_ == Mode::SQ8PD) {
                     d_e = compute_l2_distance_quantized_pd(&quantized_data_[e * dim_], q_shifted, dim_, pd_scale_.data(), threshold);
                 } else {
                     d_e = dist_to(e, q, threshold);
@@ -494,7 +486,6 @@ private:
     // ------------------------------------------------------------------
     void insert(int idx, SearchTracker& tracker) {
         int l = random_level(tracker.rng);
-        level_[idx] = l;
         graph_[idx].assign(l + 1, {});
 
         int ep;
@@ -532,7 +523,15 @@ private:
             ep = nearest_in(W);   // best found so far → entry for next layer
 
             auto neighbors = select_neighbors(W, M_max);
-            graph_[idx][lc] = neighbors;
+            {
+                // idx is already discoverable at higher layers, so another
+                // thread can be reading graph_[idx][lc] (it copies under this
+                // same striped lock) while we assign it — an unlocked
+                // move-assign here is a torn-vector data race (manifested as
+                // "malloc(): unaligned tcache chunk" crashes at full scale).
+                std::lock_guard<std::mutex> lock(node_locks_[idx % LOCK_POOL_SIZE]);
+                graph_[idx][lc] = neighbors;
+            }
 
             for (int32_t nb : neighbors) {
                 std::lock_guard<std::mutex> lock(node_locks_[nb % LOCK_POOL_SIZE]);
@@ -560,7 +559,6 @@ PYBIND11_MODULE(hnsw_cpp, m) {
              py::arg("data"), py::arg("M") = 16, py::arg("ef_construction") = 100, py::arg("mode") = "float",
              py::arg("heuristic") = false)
         .def("query", &HNSWIndex::query,
-             py::arg("query"), py::arg("k"), py::arg("ef") = 50, py::arg("refine_r") = -1)
-        .def("total_distances_count", &HNSWIndex::total_distances_count)
-        .def("reset_distances_count", &HNSWIndex::reset_distances_count);
+             py::arg("query"), py::arg("k"), py::arg("ef") = 100)
+        .def("total_distances_count", &HNSWIndex::total_distances_count);
 }
