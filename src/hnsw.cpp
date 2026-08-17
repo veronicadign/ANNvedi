@@ -625,7 +625,15 @@ private:
             ep = nearest_in(W);   // best found so far → entry for next layer
 
             auto neighbors = select_neighbors(W, M_max, q);
-            graph_[idx][lc] = neighbors;
+            {
+                // idx is already discoverable at higher layers, so another
+                // thread can be reading graph_[idx][lc] (it copies under this
+                // same striped lock) while we assign it — an unlocked
+                // move-assign here is a torn-vector data race (manifested as
+                // "malloc(): unaligned tcache chunk" crashes at full scale).
+                std::lock_guard<std::mutex> lock(node_locks_[idx % LOCK_POOL_SIZE]);
+                graph_[idx][lc] = neighbors;
+            }
 
             for (int32_t nb : neighbors) {
                 std::lock_guard<std::mutex> lock(node_locks_[nb % LOCK_POOL_SIZE]);
