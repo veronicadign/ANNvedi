@@ -1,0 +1,18 @@
+# GPU quantized-filter / CPU exact-rerank contestant.
+# No build parameters: fit always quantizes (per-dim SQ8) and uploads codes.
+# 'r' = candidates kept from the GPU scan for exact CPU verification.
+# Validated on full yahoo: recall 1.0000 already at r=150; the values below
+# carry wide safety margins (rerank cost stays tens of microseconds).
+scenarios:
+  high_recall:
+    default:
+      index_params: {}
+      query_params: {r: 500}
+  fast:
+    default:
+      index_params: {}
+      query_params: {r: 200}
+  memory:
+    default:
+      index_params: {}
+      query_params: {r: 500}
