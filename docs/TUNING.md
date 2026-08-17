@@ -178,6 +178,22 @@ retuning on the competition machine).
   only ~4% of cycles; AVX-512 16-wide confirmed; software prefetch already
   saturates line-fill buffers at +2 lookahead).
 
+### Final-round hardware: AWS g7.2xlarge (confirmed 2026-08-13)
+
+8 vCPU (4 cores + HT) on custom 6th-gen Intel Xeon Scalable (Granite Rapids
+family → native full-width AVX-512: our kernels run at full width, no AVX2
+fallback needed), 32 GiB RAM, 600 GB NVMe. GPU: 1x NVIDIA RTX PRO 4500
+Blackwell, 32 GB GDDR7, ~800 GB/s. Organizers confirmed one-query-at-a-time
+(no batching), so any GPU brute-force rival is VRAM-bandwidth-bound:
+qps <= 800 GB/s / dataset_bytes per query. With int8 codes that beats our
+HNSW on the small datasets (yahoo/celeba), roughly ties the mid ones, loses
+the biggest (gooaq) and loses Paperone outright (max distance count) while
+trivially winning Marie Kondo (near-zero build). Whether GPU use is legal
+and whether the evaluator passes --gpus to containers are open questions
+for the organizers — both must be yes before it matters. Race-day checks:
+lscpu (confirm AVX-512), rebuild image on the box (-march=native), rerun
+the tuner, one reorder A/B.
+
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
   config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.
