@@ -194,6 +194,18 @@ for the organizers — both must be yes before it matters. Race-day checks:
 lscpu (confirm AVX-512), rebuild image on the box (-march=native), rerun
 the tuner, one reorder A/B.
 
+### Rust port experiment (2026-08-13): C++ stays
+
+Full port of the submission index to Rust (rust/hnsw_rs: pyo3 + std::arch
+AVX-512 kernels, same algorithm/locking/reorder). Functionally equivalent
+(recall and distance counts match within build nondeterminism on all three
+modes). Performance, interleaved full-yahoo A/B at the shipping config:
+queries C++ 0.500ms vs Rust 0.524ms (~4.5% slower, consistent every round —
+plausibly bounds-checking in the beam hot loop); builds 327s vs 398s
+(sequential measurement, thermal ordering bias makes the true gap <= ~18%).
+Closing the gap would need get_unchecked-style unsafe throughout the hot
+path, i.e. the same code with fewer guarantees. No reason to switch.
+
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
   config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.
