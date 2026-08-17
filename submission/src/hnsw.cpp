@@ -49,8 +49,8 @@ public:
     void fit(py::array_t<float> data, int M, int ef_construction, const std::string& mode = "float",
              bool heuristic = false) {
         py::buffer_info buf = data.request();
-        if (buf.ndim != 2)
-            throw std::runtime_error("Input must be 2D");
+        if (buf.ndim != 2 || buf.shape[0] == 0)
+            throw std::runtime_error("Input must be a non-empty 2D array");
 
         npts_            = (int)buf.shape[0];
         dim_             = (int)buf.shape[1];
@@ -131,15 +131,13 @@ public:
         }
 
         graph_.resize(npts_);
-
-        entry_point_ = -1;
-        max_level_   = -1;
         n_distances_.store(0);
 
         is_building_ = true;
 
-        // Insert first node sequentially to establish the entry point
-        if (npts_ > 0) {
+        // Insert the first node sequentially: fit() guarantees npts_ >= 1, so
+        // every worker thread starts with a valid entry point already set.
+        {
             std::mt19937 rng(42);
             int l0 = random_level(rng);
             graph_[0].assign(l0 + 1, {});
@@ -488,21 +486,11 @@ private:
         int l = random_level(tracker.rng);
         graph_[idx].assign(l + 1, {});
 
+        // Entry point is always valid: node 0 is inserted before threads start.
         int ep;
         int max_l;
         {
             std::lock_guard<std::mutex> lock(global_lock_);
-            ep = entry_point_;
-            max_l = max_level_;
-        }
-
-        if (ep == -1) {
-            std::lock_guard<std::mutex> lock(global_lock_);
-            if (entry_point_ == -1) {
-                entry_point_ = idx;
-                max_level_   = l;
-                return;
-            }
             ep = entry_point_;
             max_l = max_level_;
         }
