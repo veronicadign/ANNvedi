@@ -206,6 +206,28 @@ plausibly bounds-checking in the beam hot loop); builds 327s vs 398s
 Closing the gap would need get_unchecked-style unsafe throughout the hot
 path, i.e. the same code with fewer guarantees. No reason to switch.
 
+### Measured on the real finals hardware (g7e.2xlarge, 2026-08-19)
+
+Box: Xeon Platinum 8559C 8 vCPU (AVX-512 ✓), 64 GiB, RTX PRO 6000 Blackwell
+96 GB (driver 610.57, CUDA 13.2), 1.7 TB instance NVMe. Full yahoo, 1000
+queries, k=100, one query at a time:
+
+| approach | recall | ms | qps | build |
+|---|---|---|---|---|
+| GPU filter R=150 | 1.0000 | 0.368 | 2718 | ~1s upload (+~2s quantize) |
+| GPU filter R=500 | 1.0000 | 0.526 | 1902 | " |
+| ours hnsw ef=120 (sq8+heur+reorder) | 0.9612 | 0.535 | 1868 | 92s @ 7.8x |
+| faiss ef=200 / 100 / 50 | .975/.935/.850 | .500/.291/.196 | 2001/3431/5115 | 36s |
+
+GPU stage split (R=150): scan 0.209ms (247 MB @ ~1.2 TB/s effective), CUB
+top-R 0.063ms, CPU rerank 0.078ms. On yahoo the GPU filter beats every
+≥0.95 entrant at recall 1.0 with a seconds-long build and 150 full-Euclidean
+distances/query — best Sherlock+Marie Kondo+Paperone entry IF GPUs are
+ruled legal and the evaluator passes --gpus. CPU notes: our build scales to
+7.8x on the 8 vCPUs (92s vs 245-327s local); our query is ~15% slower than
+local (server DRAM latency vs our random-access reads) while faiss gains
+~15% (bandwidth-bound streaming) — rerun the CPU tuner on this box.
+
 ### Open work on the `memory` cell
 - Speed gate is ≤2× faiss ef50 ≈ 0.44ms/query (this machine); our only ≥0.95
   config runs 0.58ms. Closing it needs kernel speed (SIMD in `simd.h`), not params.
