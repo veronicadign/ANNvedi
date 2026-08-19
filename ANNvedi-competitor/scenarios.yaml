@@ -1,0 +1,17 @@
+# ANNvedi self-calibrating contestant: no per-dataset blocks needed.
+# The index selects its backend (GPU filter if a CUDA device is visible,
+# else the tuned HNSW) and calibrates its own query knob at fit() time
+# against exact sample ground truth, targeting the scenario bar + 1.5%.
+scenarios:
+  high_recall:
+    default:
+      index_params: {}
+      query_params: {}
+  fast:
+    default:
+      index_params: {}
+      query_params: {}
+  memory:
+    default:
+      index_params: {}
+      query_params: {}
