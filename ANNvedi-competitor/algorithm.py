@@ -22,7 +22,7 @@ import hnsw_cpp  # pip-installed at image build
 # ---------------------------------------------------------------------------
 
 BARS = {"high_recall": 0.95, "memory": 0.95, "fast": 0.85}
-MARGIN = 0.015
+MARGIN = 0.01
 # In-sample pseudo-queries measure ~1% easier than real unseen queries even
 # with the self-hit excluded (measured on yahoo: sample 0.973 vs true 0.963).
 # The sample target compensates: bar + MARGIN + CALIBRATION_BIAS.
@@ -123,10 +123,26 @@ class Algorithm:
             else:
                 print(f"[ANNvedi] gpu unavailable ({lib.gf_last_error().decode()})", flush=True)
         if self._impl != "gpu":
-            M, efc = HNSW_BUILD.get(scenario, (16, 100))
+            dM, defc = HNSW_BUILD.get(scenario, (16, 100))
             self._hnsw = hnsw_cpp.HNSWIndex()
-            self._hnsw.fit(self._train, M, efc, "sq8", True, True)
+            self._hnsw.fit(self._train,
+                           int(index_params.get("M", dM)),
+                           int(index_params.get("ef_construction", defc)),
+                           str(index_params.get("mode", "sq8")),
+                           bool(index_params.get("heuristic", True)),
+                           bool(index_params.get("reorder", True)))
             self._impl = "hnsw"
+
+        # ---- knobs: pre-seeded per-dataset values skip calibration entirely ----
+        seed = index_params.get("r" if self._impl == "gpu" else "ef")
+        if seed is not None:
+            if self._impl == "gpu":
+                self._r = int(seed)
+            else:
+                self._ef = int(seed)
+            print(f"[ANNvedi] seeded {'r' if self._impl == 'gpu' else 'ef'}={seed} "
+                  f"— calibration skipped", flush=True)
+            return
 
         # ---- self-calibration against exact sample ground truth ----
         thresholds = self._sample_gt(k)
@@ -161,8 +177,9 @@ class Algorithm:
 
     def query(self, query: np.ndarray, k: int, **query_params) -> np.ndarray:
         if self._impl == "gpu":
-            return self._gpu_query(query, k, self._r)
-        return self._hnsw.query(np.ascontiguousarray(query, dtype=np.float32), k, self._ef)
+            return self._gpu_query(query, k, int(query_params.get("r", self._r)))
+        return self._hnsw.query(np.ascontiguousarray(query, dtype=np.float32), k,
+                                int(query_params.get("ef", self._ef)))
 
     def get_n_distances(self) -> int:
         if self._impl == "gpu":

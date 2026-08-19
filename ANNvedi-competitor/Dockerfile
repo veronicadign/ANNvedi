@@ -10,12 +10,10 @@ RUN pip install --no-cache-dir pybind11
 COPY . /app/source
 WORKDIR /app/source
 
-# CPU backend: hnsw_cpp via pip (setup.py builds only hnsw_cpp)
+# CPU backend: hnsw_cpp via pip; GPU backend: setup.py's build_gpu command
+# (nvcc -> libgpufilter.so, compute_80 PTX so GPU-less builds JIT on target)
 RUN pip install .
-# GPU backend: PTX compute_80 so the image builds GPU-less and JITs on target
-RUN nvcc -O3 -shared -Xcompiler -fPIC \
-        -gencode arch=compute_80,code=compute_80 \
-        src/gpu_filter.cu -o /app/libgpufilter.so
+RUN python3 setup.py build_gpu && cp libgpufilter.so /app/libgpufilter.so
 
 WORKDIR /app
 RUN cp /app/source/algorithm.py /app/algorithm.py && \

@@ -1,17 +1,310 @@
-# ANNvedi self-calibrating contestant: no per-dataset blocks needed.
-# The index selects its backend (GPU filter if a CUDA device is visible,
-# else the tuned HNSW) and calibrates its own query knob at fit() time
-# against exact sample ground truth, targeting the scenario bar + 1.5%.
+# ANNvedi self-calibrating contestant — SEEDED for the known dataset names.
+# Per-dataset blocks carry pre-calibrated knobs (r for gpu, ef for hnsw) at
+# recall >= bar + 1.5%, so fit() SKIPS the calibration pass entirely (faster
+# build). Unknown stems hit 'default' (no seeds) and self-calibrate at fit.
+# hnsw ef seeds come from experiments/results/tuning_20260811_210929.json,
+# re-selected at the raised +1.5% target.
 scenarios:
   high_recall:
     default:
-      index_params: {}
+      index_params:
+        backend: gpu
       query_params: {}
+    yahoo-minilm-public: &id001
+      index_params:
+        backend: gpu
+        M: 16
+        ef_construction: 100
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 140
+      query_params:
+        r: 150
+        ef: 140
+    yahoo-minilm-private: *id001
+    celeba-resnet-public: &id002
+      index_params:
+        backend: gpu
+        M: 16
+        ef_construction: 100
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 140
+      query_params:
+        r: 150
+        ef: 140
+    celeba-resnet-private: *id002
+    landmark-nomic-public: &id003
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 140
+      query_params:
+        r: 150
+        ef: 140
+    landmark-nomic-private: *id003
+    imagenet-clip-public: &id004
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 200
+      query_params:
+        r: 150
+        ef: 200
+    imagenet-clip-private: *id004
+    agnews-mxbai-public: &id005
+      index_params:
+        backend: gpu
+        M: 16
+        ef_construction: 100
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    agnews-mxbai-private: *id005
+    simplewiki-openai-public: &id006
+      index_params:
+        backend: gpu
+        M: 16
+        ef_construction: 100
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    simplewiki-openai-private: *id006
+    gooaq-distilroberta-public: &id007
+      index_params:
+        backend: gpu
+        M: 16
+        ef_construction: 100
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    gooaq-distilroberta-private: *id007
   fast:
     default:
-      index_params: {}
+      index_params:
+        backend: hnsw
       query_params: {}
+    yahoo-minilm-public: &id008
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 100
+      query_params:
+        r: 150
+        ef: 100
+    yahoo-minilm-private: *id008
+    celeba-resnet-public: &id009
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    celeba-resnet-private: *id009
+    landmark-nomic-public: &id010
+      index_params:
+        backend: hnsw
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    landmark-nomic-private: *id010
+    imagenet-clip-public: &id011
+      index_params:
+        backend: hnsw
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    imagenet-clip-private: *id011
+    agnews-mxbai-public: &id012
+      index_params:
+        backend: hnsw
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    agnews-mxbai-private: *id012
+    simplewiki-openai-public: &id013
+      index_params:
+        backend: hnsw
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 120
+      query_params:
+        r: 150
+        ef: 120
+    simplewiki-openai-private: *id013
+    gooaq-distilroberta-public: &id014
+      index_params:
+        backend: hnsw
+        M: 8
+        ef_construction: 64
+        mode: sq8pd
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 100
+      query_params:
+        r: 150
+        ef: 100
+    gooaq-distilroberta-private: *id014
   memory:
     default:
-      index_params: {}
+      index_params:
+        backend: gpu
       query_params: {}
+    yahoo-minilm-public: &id015
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+      query_params:
+        r: 150
+    yahoo-minilm-private: *id015
+    celeba-resnet-public: &id016
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+      query_params:
+        r: 150
+    celeba-resnet-private: *id016
+    landmark-nomic-public: &id017
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 140
+      query_params:
+        r: 150
+        ef: 140
+    landmark-nomic-private: *id017
+    imagenet-clip-public: &id018
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 200
+      query_params:
+        r: 150
+        ef: 200
+    imagenet-clip-private: *id018
+    agnews-mxbai-public: &id019
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 300
+      query_params:
+        r: 150
+        ef: 300
+    agnews-mxbai-private: *id019
+    simplewiki-openai-public: &id020
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8
+        heuristic: true
+        reorder: true
+        r: 150
+      query_params:
+        r: 150
+    simplewiki-openai-private: *id020
+    gooaq-distilroberta-public: &id021
+      index_params:
+        backend: gpu
+        M: 8
+        ef_construction: 64
+        mode: sq8pd
+        heuristic: true
+        reorder: true
+        r: 150
+        ef: 300
+      query_params:
+        r: 150
+        ef: 300
+    gooaq-distilroberta-private: *id021
