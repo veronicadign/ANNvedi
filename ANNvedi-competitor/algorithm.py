@@ -128,9 +128,7 @@ class Algorithm:
             self._hnsw.fit(self._train,
                            int(index_params.get("M", dM)),
                            int(index_params.get("ef_construction", defc)),
-                           str(index_params.get("mode", "sq8")),
-                           bool(index_params.get("heuristic", True)),
-                           bool(index_params.get("reorder", True)))
+                           str(index_params.get("mode", "sq8")))
             self._impl = "hnsw"
 
         # ---- knobs: pre-seeded per-dataset values skip calibration entirely ----

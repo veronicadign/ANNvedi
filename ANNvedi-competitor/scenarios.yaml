@@ -16,8 +16,6 @@ scenarios:
         M: 16
         ef_construction: 100
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 140
       query_params:
@@ -30,8 +28,6 @@ scenarios:
         M: 16
         ef_construction: 100
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 140
       query_params:
@@ -44,8 +40,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 140
       query_params:
@@ -58,8 +52,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 200
       query_params:
@@ -72,8 +64,6 @@ scenarios:
         M: 16
         ef_construction: 100
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -86,8 +76,6 @@ scenarios:
         M: 16
         ef_construction: 100
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -100,8 +88,6 @@ scenarios:
         M: 16
         ef_construction: 100
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -119,8 +105,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 100
       query_params:
@@ -133,8 +117,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -147,8 +129,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -161,8 +141,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -175,8 +153,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -189,8 +165,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 120
       query_params:
@@ -203,8 +177,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8pd
-        heuristic: true
-        reorder: true
         r: 150
         ef: 100
       query_params:
@@ -222,8 +194,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
       query_params:
         r: 150
@@ -234,8 +204,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
       query_params:
         r: 150
@@ -246,8 +214,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 140
       query_params:
@@ -260,8 +226,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 200
       query_params:
@@ -274,8 +238,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
         ef: 300
       query_params:
@@ -288,8 +250,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8
-        heuristic: true
-        reorder: true
         r: 150
       query_params:
         r: 150
@@ -300,8 +260,6 @@ scenarios:
         M: 8
         ef_construction: 64
         mode: sq8pd
-        heuristic: true
-        reorder: true
         r: 150
         ef: 300
       query_params:
