@@ -220,7 +220,28 @@ queries, k=100, one query at a time:
 | faiss ef=200 / 100 / 50 | .975/.935/.850 | .500/.291/.196 | 2001/3431/5115 | 36s |
 
 GPU stage split (R=150): scan 0.209ms (247 MB @ ~1.2 TB/s effective), CUB
-top-R 0.063ms, CPU rerank 0.078ms. On yahoo the GPU filter beats every
+top-R 0.063ms, CPU rerank 0.078ms.
+
+All-datasets GPU filter (R=150, measured on the g7e; ours = local pick
+latency x1.15 box factor, yahoo measured directly):
+
+| dataset | GPU qps (recall) | ours hnsw qps (est) | high_recall verdict |
+|---|---|---|---|
+| yahoo | 2718 (1.0000) | 1868 (measured) | GPU +45% |
+| celeba | 1637 (0.9984) | ~1040 | GPU +57% |
+| imagenet | 1278 (1.0000) | ~1260 | tie |
+| landmark | 1259 (1.0000) | ~1875 | ours +49% |
+| agnews | 920 (0.9971) | ~1290 | ours +40% |
+| simplewiki | 823 (0.9998) | ~880 | ~tie |
+| gooaq | 723 (1.0000) | ~1035 | ours +43% |
+
+Scan efficiency 850-1180 GB/s across sizes. GPU recall is 0.997-1.0
+everywhere (zero private-query margin risk), build is seconds on every
+dataset (Marie Kondo sweep), and distance count is 150/query (Paperone
+sweep, ~10-16x below the field). The strongest final-form submission if
+GPUs are ruled legal: ONE image with both backends, chosen per dataset in
+scenarios.yaml (GPU: yahoo/celeba/imagenet; hnsw: landmark/agnews/gooaq/
+simplewiki), pending the two organizer gates. On yahoo the GPU filter beats every
 ≥0.95 entrant at recall 1.0 with a seconds-long build and 150 full-Euclidean
 distances/query — best Sherlock+Marie Kondo+Paperone entry IF GPUs are
 ruled legal and the evaluator passes --gpus. CPU notes: our build scales to
